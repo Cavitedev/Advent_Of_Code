@@ -1,0 +1,17 @@
+{
+  "name": "advent_code",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "test"
+  },
+  "author": "Cavitedev",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.11.10",
+    "typescript": "^4.9.3"
+  }
+}
