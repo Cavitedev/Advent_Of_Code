@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cavitedev/Advent_Code.git"
+  },
   "scripts": {
     "build": "tsc",
     "run": "tsc && node dist/index.js",
