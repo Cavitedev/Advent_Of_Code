@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "run": "tsc && node dist/index.js",
     "test": "test"
   },
   "author": "Cavitedev",
