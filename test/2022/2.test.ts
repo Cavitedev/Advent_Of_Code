@@ -1,4 +1,7 @@
-import { rockPaperScissorsScoreCounter, rockPaperScissorsScoreCounter2 } from "../../src/2022/2/2rockScissorsPaper.js";
+import {
+  rockPaperScissorsScoreCounter,
+  rockPaperScissorsScoreCounter2,
+} from "../../src/2022/2/2rockScissorsPaper.js";
 
 describe("Second problem from Advent Code 2022", () => {
   it("First part, returns right score from input.txt", async () => {
