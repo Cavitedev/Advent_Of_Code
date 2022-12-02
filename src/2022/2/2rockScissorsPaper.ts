@@ -55,7 +55,6 @@ export async function rockPaperScissorsScoreCounter2(
   console.log(score);
   return score;
 }
-
 function readFileByLine(file: String): readline.Interface {
   const fileStream = fs.createReadStream("src/2022/2/" + file, {
     encoding: "utf8",
