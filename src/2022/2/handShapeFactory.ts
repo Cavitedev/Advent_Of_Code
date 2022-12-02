@@ -32,7 +32,7 @@ interface IHandShapeFactory {
   buildHandShape(): HandShape;
 }
 
-class PaperFactory implements IHandShapeFactory {
+export class PaperFactory implements IHandShapeFactory {
   private static _instance: PaperFactory;
 
   public static get Instance() {
@@ -44,7 +44,7 @@ class PaperFactory implements IHandShapeFactory {
   }
 }
 
-class RockFactory implements IHandShapeFactory {
+export class RockFactory implements IHandShapeFactory {
   private static _instance: RockFactory;
 
   public static get Instance() {
@@ -56,7 +56,7 @@ class RockFactory implements IHandShapeFactory {
   }
 }
 
-class ScissorsFactory implements IHandShapeFactory {
+export class ScissorsFactory implements IHandShapeFactory {
   private static _instance: ScissorsFactory;
 
   public static get Instance() {
