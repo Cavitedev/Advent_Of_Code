@@ -1,0 +1,38 @@
+import { default as fs } from "fs";
+import { default as readline } from "readline";
+import { HandShapeFactory } from "./handShapeFactory.js";
+
+export async function rockPaperScissorsScoreCounter(
+  file: String = "input.txt"
+): Promise<number> {
+  const rl = readFileByLine(file);
+
+  let score = 0;
+
+  const handShapeFactory = HandShapeFactory.Instance;
+
+  for await (const line of rl) {
+    let opponentActionLetter = line[0];
+    let opponentAction = handShapeFactory.createHandShape(opponentActionLetter);
+
+    let yourActionLetter = line[2];
+    let yourAction = handShapeFactory.createHandShape(yourActionLetter);
+
+    let scoreMatch = yourAction.scoreMatch(opponentAction);
+    score += scoreMatch;
+  }
+
+  console.log(score);
+  return score;
+}
+function readFileByLine(file: String): readline.Interface {
+  const fileStream = fs.createReadStream("src/2022/2/" + file, {
+    encoding: "utf8",
+  });
+
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity,
+  });
+  return rl;
+}
