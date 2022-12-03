@@ -1,4 +1,7 @@
-import { runsackPrioritiesSum } from "../../src/2022/3/3runsackReorganization.js";
+import {
+  runsackPrioritiesSum,
+  runsackPrioritiesSumGroups,
+} from "../../src/2022/3/3runsackReorganization.js";
 import { Runsack } from "../../src/2022/3/Runsack.js";
 
 describe("Third problem from Advent Code 2022", () => {
@@ -63,9 +66,14 @@ describe("Third problem from Advent Code 2022", () => {
       expect(itemValue).toEqual(16);
     });
 
-    it("First part, returns right score from text.txt", async () => {
+    it("Returns right score from text.txt", async () => {
       const res = await runsackPrioritiesSum(2, "test.txt");
       expect(res).toBe(157);
+    });
+
+    it("Returns right score from input.txt", async () => {
+      const res = await runsackPrioritiesSum(2, "input.txt");
+      expect(res).toBe(8202);
     });
   });
 
@@ -78,11 +86,28 @@ describe("Third problem from Advent Code 2022", () => {
       ]);
 
       const lettersInCommon = runsack.sharedItems();
+      expect(lettersInCommon).toEqual(["r"]);
     });
 
-    // it("Second part, returns right score from test.txt", async () => {
-    //   const res = await runsackPrioritiesSum("input.txt");
-    //   expect(res).toBe(157);
-    // });
+    it("Ransack finds value of item with 3 sets of items", () => {
+      const runsack = new Runsack([
+        "vJrwpWtwJgWrhcsFMMfFFhFp",
+        "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
+        "PmmdzqPrVvPwwTWBwg",
+      ]);
+
+      const itemValue = runsack.sharedItemsPrioritiesSum();
+      expect(itemValue).toEqual(18);
+    });
+
+    it("Rreturns right score from test.txt", async () => {
+      const res = await runsackPrioritiesSumGroups(3, "test.txt");
+      expect(res).toBe(70);
+    });
+
+    it("Returns right score from input.txt", async () => {
+      const res = await runsackPrioritiesSumGroups(3, "input.txt");
+      expect(res).toBe(2864);
+    });
   });
 });
