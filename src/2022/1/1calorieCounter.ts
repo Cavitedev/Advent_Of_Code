@@ -7,22 +7,22 @@ export async function calorieCounter(
 ): Promise<number> {
   const rl = readFileByLine(file);
 
-  let currentCalorie = 0;
+  let currentCalories = 0;
   let bestCalories = Array(topToCount).fill(0);
 
   for await (const line of rl) {
     if (line === "") {
-      let lowestCalorieValue = Math.min(...bestCalories);
-      let indexLowestCalorie = bestCalories.indexOf(lowestCalorieValue);
+      const lowestCalorieValue = Math.min(...bestCalories);
 
-      if (lowestCalorieValue < currentCalorie) {
-        bestCalories[indexLowestCalorie] = currentCalorie;
+      if (lowestCalorieValue < currentCalories) {
+        const indexLowestCalorie = bestCalories.indexOf(lowestCalorieValue);
+        bestCalories[indexLowestCalorie] = currentCalories;
       }
-      currentCalorie = 0;
+      currentCalories = 0;
       continue;
     }
 
-    currentCalorie += parseInt(line);
+    currentCalories += parseInt(line);
   }
 
   const caloriesTopSum: number = bestCalories.reduce((a, b) => a + b);
