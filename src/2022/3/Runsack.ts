@@ -3,23 +3,30 @@ import internal from "stream";
 export class Runsack {
   compartments: Array<string>;
 
-  constructor(items: string, numberOfCompartments: number) {
-    this.compartments = this.evenlySplitCompartments(
+  constructor(compartments: Array<string>) {
+    this.compartments = compartments;
+  }
+
+  static fromSingleItemsList(
+    items: string,
+    numberOfCompartments: number
+  ): Runsack {
+    const compartments = Runsack._evenlySplitCompartments(
       items,
       numberOfCompartments
     );
+
+    return new Runsack(compartments);
   }
 
-  static fromMultipleLines(arrayOfItems: [string]) {}
-
-  public evenlySplitCompartments(
+  private static _evenlySplitCompartments(
     items: string,
     numberOfCompartments: number
   ): Array<string> {
     let compartments: Array<string> = [];
 
     for (let i = 0; i < numberOfCompartments; i++) {
-      const compartment = this.evenlySplitCompartment(
+      const compartment = this._evenlySplitCompartment(
         items,
         i,
         numberOfCompartments
@@ -29,7 +36,7 @@ export class Runsack {
     return compartments;
   }
 
-  private evenlySplitCompartment(
+  private static _evenlySplitCompartment(
     items: string,
     compartmentIndex: number,
     numberOfCompartments: number

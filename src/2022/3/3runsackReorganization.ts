@@ -13,7 +13,7 @@ export async function runsackPrioritiesSum(
 
   for await (const line of rl) {
 
-    const runsack = new Runsack(line, 2);
+    const runsack = Runsack.fromSingleItemsList(line, compartments);
     const sharedItemsPriorities = runsack.sharedItemsPrioritiesSum();
     sumPriorities += sharedItemsPriorities;
     
@@ -35,8 +35,8 @@ export async function runsackPrioritiesSumGroups(
   let currentGroup = 0;
   for await (const line of rl) {
 
-    
-    const runsack = new Runsack(line, 2);
+
+    const runsack = new Runsack([line]);
     const sharedItemsPriorities = runsack.sharedItemsPrioritiesSum();
     sumPriorities += sharedItemsPriorities;
     
