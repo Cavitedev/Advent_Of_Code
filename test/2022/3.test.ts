@@ -5,9 +5,9 @@ describe("Third problem from Advent Code 2022", () => {
   describe("Tests for the first part of the problem", () => {
     it("Runsack splits 2 compartments correctly", () => {
       const runsack = new Runsack("vJrwpWtwJgWrhcsFMMfFFhFp", 2);
-      const compartment1 = runsack.compartment(0);
+      const compartment1 = runsack.compartments[0];
       expect(compartment1).toBe("vJrwpWtwJgWr");
-      const compartment2 = runsack.compartment(1);
+      const compartment2 = runsack.compartments[1];
       expect(compartment2).toBe("hcsFMMfFFhFp");
     });
 

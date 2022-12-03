@@ -13,7 +13,7 @@ export async function runsackPrioritiesSum(
 
   for await (const line of rl) {
 
-    const runsack = new Runsack(line, compartments);
+    const runsack = new Runsack(line, 2);
     const sharedItemsPriorities = runsack.sharedItemsPrioritiesSum();
     sumPriorities += sharedItemsPriorities;
     
@@ -23,7 +23,28 @@ export async function runsackPrioritiesSum(
   return sumPriorities;
 }
 
+export async function runsackPrioritiesSumGroups(
+  groupsCount: number = 3,
+  file: String = "input.txt"
+): Promise<number> {
+  const rl = readFileByLine(file);
 
+  let sumPriorities = 0;
+
+  let groups = [];
+  let currentGroup = 0;
+  for await (const line of rl) {
+
+    
+    const runsack = new Runsack(line, 2);
+    const sharedItemsPriorities = runsack.sharedItemsPrioritiesSum();
+    sumPriorities += sharedItemsPriorities;
+    
+  }
+
+  console.log(sumPriorities);
+  return sumPriorities;
+}
 
 function readFileByLine(file: String): readline.Interface {
   const fileStream = fs.createReadStream("src/2022/3/" + file, {

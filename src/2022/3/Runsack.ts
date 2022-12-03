@@ -1,17 +1,41 @@
 import internal from "stream";
 
 export class Runsack {
-  items: string;
-  compartments: number;
+  compartments: Array<string>;
 
-  constructor(items: string, compartments: number) {
-    this.items = items;
-    this.compartments = compartments;
+  constructor(items: string, numberOfCompartments: number) {
+    this.compartments = this.evenlySplitCompartments(
+      items,
+      numberOfCompartments
+    );
   }
 
-  public compartment(compartmentIndex: number): string {
-    const compartmentLength = this.items.length / this.compartments;
-    const compartment = this.items.slice(
+  static fromMultipleLines(arrayOfItems: [string]) {}
+
+  public evenlySplitCompartments(
+    items: string,
+    numberOfCompartments: number
+  ): Array<string> {
+    let compartments: Array<string> = [];
+
+    for (let i = 0; i < numberOfCompartments; i++) {
+      const compartment = this.evenlySplitCompartment(
+        items,
+        i,
+        numberOfCompartments
+      );
+      compartments.push(compartment);
+    }
+    return compartments;
+  }
+
+  private evenlySplitCompartment(
+    items: string,
+    compartmentIndex: number,
+    numberOfCompartments: number
+  ): string {
+    const compartmentLength = items.length / numberOfCompartments;
+    const compartment = items.slice(
       compartmentLength * compartmentIndex,
       compartmentLength * (compartmentIndex + 1)
     );
@@ -20,15 +44,15 @@ export class Runsack {
   }
 
   public sharedItems() {
-    let lettersInCommon: Array<string> = [...this.compartment(0)];
+    let lettersInCommon: Array<string> = [...this.compartments[0]];
 
-    for (let i = 1; i < this.compartments; i++) {
-      const compartment: Array<string> = [...this.compartment(i)];
+    for (let i = 1; i < this.compartments.length; i++) {
+      const compartment: Array<string> = [...this.compartments[i]];
       lettersInCommon = lettersInCommon.filter((x) => compartment.includes(x));
     }
 
     //Removes duplicates
-    lettersInCommon = [...new Set(lettersInCommon)]
+    lettersInCommon = [...new Set(lettersInCommon)];
     return lettersInCommon;
   }
 
@@ -54,7 +78,7 @@ export class Runsack {
 
   public sharedItemsPrioritiesSum(): number {
     const sharedItems = this.sharedItems();
-    const sharedItemsPriotiesSum : number = sharedItems.reduce<number>(
+    const sharedItemsPriotiesSum: number = sharedItems.reduce<number>(
       (a, b) => a + this.itemPriority(b),
       0
     );
