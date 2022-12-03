@@ -46,7 +46,7 @@ describe("Third problem from Advent Code 2022", () => {
     });
 
     it("First part, returns right score from text.txt", async () => {
-      const res = await runsackPrioritiesSum("test.txt");
+      const res = await runsackPrioritiesSum(2, "test.txt");
       expect(res).toBe(157);
     });
   });

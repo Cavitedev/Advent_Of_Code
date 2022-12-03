@@ -3,6 +3,7 @@ import { default as readline } from "readline";
 import { Runsack } from "./Runsack.js";
 
 export async function runsackPrioritiesSum(
+  compartments: number = 2,
   file: String = "input.txt"
 ): Promise<number> {
   const rl = readFileByLine(file);
@@ -12,7 +13,7 @@ export async function runsackPrioritiesSum(
 
   for await (const line of rl) {
 
-    const runsack = new Runsack(line, 2);
+    const runsack = new Runsack(line, compartments);
     const sharedItemsPriorities = runsack.sharedItemsPrioritiesSum();
     sumPriorities += sharedItemsPriorities;
     
