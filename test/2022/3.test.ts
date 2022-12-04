@@ -100,7 +100,7 @@ describe("Third problem from Advent Code 2022", () => {
       expect(itemValue).toEqual(18);
     });
 
-    it("Rreturns right score from test.txt", async () => {
+    it("Returns right score from test.txt", async () => {
       const res = await runsackPrioritiesSumGroups(3, "test.txt");
       expect(res).toBe(70);
     });
