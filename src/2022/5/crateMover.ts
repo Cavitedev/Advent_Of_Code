@@ -1,12 +1,18 @@
-export class SuplyStacks {
+export class CrateMover9000 {
   public stacks: string[][];
 
   constructor(stacks: string[][]) {
     this.stacks = stacks;
   }
 
-  public static fromString(str: string): SuplyStacks {
+  public static fromString(str: string): CrateMover9000 {
     //Get non empty lines from read
+    let stacks: string[][] = CrateMover9000.stacksFromStr(str);
+
+    return new CrateMover9000(stacks);
+  }
+
+  public static stacksFromStr(str: string) {
     const lines = str.split("\n").filter((line) => line);
 
     const stacksCount = lines[lines.length - 1].split("  ").length;
@@ -15,7 +21,6 @@ export class SuplyStacks {
     let stacks: string[][] = [];
 
     //Read from last line with elements
-
     let lineIndex = lines.length - 2;
 
     for (let i = 0; i < stacksCount; i++) {
@@ -32,8 +37,7 @@ export class SuplyStacks {
       lineIndex = lines.length - 2;
       stacks.push(stack);
     }
-
-    return new SuplyStacks(stacks);
+    return stacks;
   }
 
   public moveStacks(amount: number, from: number, to: number): void {
@@ -67,18 +71,25 @@ export class SuplyStacks {
   }
 }
 
-// export class CrateMover9001 extends CrateMover9000 {
-//   public moveStacks(amount: number, from: number, to: number): void {
-//     const fromStack = this.stacks[from];
-//     const toStack = this.stacks[to];
+export class CrateMover9001 extends CrateMover9000 {
+  public static fromString(str: string): CrateMover9000 {
+    //Get non empty lines from read
+    let stacks: string[][] = CrateMover9000.stacksFromStr(str);
 
-//     const tmpStack = [];
+    return new CrateMover9001(stacks);
+  }
 
-//     for (let i = 0; i < amount; i++) {
-//       const element = fromStack.pop();
-//       tmpStack.unshift(element);
-//     }
+  public moveStacks(amount: number, from: number, to: number): void {
+    const fromStack = this.stacks[from];
+    const toStack = this.stacks[to];
 
-//     toStack.push(...tmpStack);
-//   }
-// }
+    const tmpStack = [];
+
+    for (let i = 0; i < amount; i++) {
+      const element = fromStack.pop();
+      tmpStack.unshift(element);
+    }
+
+    toStack.push(...tmpStack);
+  }
+}

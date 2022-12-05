@@ -59,13 +59,13 @@ describe("Fourth problem from Advent Code 2022", () => {
     });
 
     it("Count works with test.txt", async () => {
-      const overlapCount = await amountOfElvesOnCleanOverlap(true, "test.txt")
-      expect(overlapCount).toEqual(2)
+      const overlapCount = await amountOfElvesOnCleanOverlap(true, "test.txt");
+      expect(overlapCount).toEqual(2);
     });
 
     it("Count works with input.txt", async () => {
-      const overlapCount = await amountOfElvesOnCleanOverlap(true, "input.txt")
-      expect(overlapCount).toEqual(444)
+      const overlapCount = await amountOfElvesOnCleanOverlap(true, "input.txt");
+      expect(overlapCount).toEqual(444);
     });
   });
 
@@ -109,13 +109,16 @@ describe("Fourth problem from Advent Code 2022", () => {
     });
 
     it("Count works with test.txt", async () => {
-      const overlapCount = await amountOfElvesOnCleanOverlap(false, "test.txt")
-      expect(overlapCount).toEqual(4)
+      const overlapCount = await amountOfElvesOnCleanOverlap(false, "test.txt");
+      expect(overlapCount).toEqual(4);
     });
 
     it("Count works with input.txt", async () => {
-      const overlapCount = await amountOfElvesOnCleanOverlap(false, "input.txt")
-      expect(overlapCount).toEqual(801)
+      const overlapCount = await amountOfElvesOnCleanOverlap(
+        false,
+        "input.txt"
+      );
+      expect(overlapCount).toEqual(801);
     });
   });
 });

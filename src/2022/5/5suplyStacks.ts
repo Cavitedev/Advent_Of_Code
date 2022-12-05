@@ -1,6 +1,6 @@
 import { default as fs } from "fs";
 import { default as readline } from "readline";
-import { SuplyStacks } from "./suplyStacks.js";
+import { CrateMover9000, CrateMover9001 } from "./crateMover.js";
 
 export async function stacksCraneSimulation(
   model: number = 9000,
@@ -9,7 +9,7 @@ export async function stacksCraneSimulation(
   const rl = readFileByLine(file);
 
   let initialState = "";
-  let suplyStacks: SuplyStacks = null;
+  let suplyStacks: CrateMover9000 = null;
 
   for await (const line of rl) {
     if (suplyStacks == null) {
@@ -17,8 +17,8 @@ export async function stacksCraneSimulation(
       if (line === "") {
         suplyStacks =
           model === 9000
-            ? SuplyStacks.fromString(initialState)
-            : null;
+            ? CrateMover9000.fromString(initialState)
+            : CrateMover9001.fromString(initialState);
       }
     } else {
       suplyStacks.moveStacksString(line);
