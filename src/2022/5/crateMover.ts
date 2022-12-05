@@ -61,8 +61,6 @@ export class CrateMover9000 {
     const toNumber = +regexTo.exec(str)[1];
 
     this.moveStacks(moveNumber, fromNumber - 1, toNumber - 1);
-
-    str.match;
     return;
   }
 
