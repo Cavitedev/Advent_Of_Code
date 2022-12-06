@@ -7,13 +7,12 @@ export class SignalTuner {
 
   public numberOfCharactersBeforeMarkerIsAvailable(markerSize: number): number {
     const repeatedCharactersRegex = /(.).*\1/;
-    let markerCandidate = this.signal.substring(0, markerSize);
 
-    for (var i = markerSize; i < this.signal.length; i++) {
+    for (var i = markerSize; i <= this.signal.length; i++) {
+      const markerCandidate = this.signal.substring(i - markerSize, i);
       if (!repeatedCharactersRegex.test(markerCandidate)) {
         return i;
       }
-      markerCandidate = this.signal.substring(i-markerSize + 1, i+1)
     }
 
     return -1;

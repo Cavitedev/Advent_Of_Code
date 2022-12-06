@@ -23,6 +23,26 @@ describe("Fifth problem from Advent Code 2022", () => {
       expect(output).toEqual(11);
     });
 
+    it("Tuner returns -1 if it doesn't find any marker", () => {
+      const input = "zcfzcz";
+
+      const signalTuner = new SignalTuner(input);
+
+      const output = signalTuner.numberOfCharactersBeforeMarkerIsAvailable(4);
+
+      expect(output).toEqual(-1);
+    });
+
+    it("Tuner returns marker even if they are the last 4 characters", () => {
+      const input = "zcfcccabcd";
+
+      const signalTuner = new SignalTuner(input);
+
+      const output = signalTuner.numberOfCharactersBeforeMarkerIsAvailable(4);
+
+      expect(output).toEqual(10);
+    });
+
     it("Test with input.txt", async () => {
       const result = await detectMarkerOnSingal(4, "input.txt");
 
