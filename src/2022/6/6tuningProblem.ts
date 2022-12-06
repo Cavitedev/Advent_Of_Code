@@ -11,7 +11,7 @@ export async function detectMarkerOnSingal(
   let result = 0;
   for await (const line of rl) {
     const tuner: SignalTuner = new SignalTuner(line);
-    result = tuner.numberOfCharactersBeforeMarkerIsAvailable(markerSize);
+    result = tuner.numberOfCharactersUntilMarkerIsAvailable(markerSize);
 
     //Only 1 line
     break;

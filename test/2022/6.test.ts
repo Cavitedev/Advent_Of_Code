@@ -8,7 +8,7 @@ describe("Fifth problem from Advent Code 2022", () => {
 
       const signalTuner = new SignalTuner(input);
 
-      const output = signalTuner.numberOfCharactersBeforeMarkerIsAvailable(4);
+      const output = signalTuner.numberOfCharactersUntilMarkerIsAvailable(4);
 
       expect(output).toEqual(5);
     });
@@ -18,7 +18,7 @@ describe("Fifth problem from Advent Code 2022", () => {
 
       const signalTuner = new SignalTuner(input);
 
-      const output = signalTuner.numberOfCharactersBeforeMarkerIsAvailable(4);
+      const output = signalTuner.numberOfCharactersUntilMarkerIsAvailable(4);
 
       expect(output).toEqual(11);
     });
@@ -28,7 +28,7 @@ describe("Fifth problem from Advent Code 2022", () => {
 
       const signalTuner = new SignalTuner(input);
 
-      const output = signalTuner.numberOfCharactersBeforeMarkerIsAvailable(4);
+      const output = signalTuner.numberOfCharactersUntilMarkerIsAvailable(4);
 
       expect(output).toEqual(-1);
     });
@@ -38,7 +38,7 @@ describe("Fifth problem from Advent Code 2022", () => {
 
       const signalTuner = new SignalTuner(input);
 
-      const output = signalTuner.numberOfCharactersBeforeMarkerIsAvailable(4);
+      const output = signalTuner.numberOfCharactersUntilMarkerIsAvailable(4);
 
       expect(output).toEqual(10);
     });
@@ -56,7 +56,7 @@ describe("Fifth problem from Advent Code 2022", () => {
 
       const signalTuner = new SignalTuner(input);
 
-      const output = signalTuner.numberOfCharactersBeforeMarkerIsAvailable(14);
+      const output = signalTuner.numberOfCharactersUntilMarkerIsAvailable(14);
 
       expect(output).toEqual(19);
     });

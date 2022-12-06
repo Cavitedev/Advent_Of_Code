@@ -5,7 +5,7 @@ export class SignalTuner {
     this.signal = signal;
   }
 
-  public numberOfCharactersBeforeMarkerIsAvailable(markerSize: number): number {
+  public numberOfCharactersUntilMarkerIsAvailable(markerSize: number): number {
     const repeatedCharactersRegex = /(.).*\1/;
 
     for (var i = markerSize; i <= this.signal.length; i++) {
