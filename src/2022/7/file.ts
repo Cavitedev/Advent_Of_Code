@@ -52,6 +52,16 @@ export class Folder implements IFile {
     return totalSize;
   }
 
+  public smallestFolderAboveThreshold(threshold: number): Folder {
+    const childFolders = [this, ...this.allFoldersInsideFolder()];
+    const orderedFolders = childFolders.sort((a, b) => a.size - b.size);
+    for(const folder of orderedFolders){
+      if(folder.size >= threshold){
+        return folder;
+      }
+    }
+  }
+
   public allFoldersInsideFolder(): Folder[] {
     const folders = [];
     for (const iFile of this.iFiles) {

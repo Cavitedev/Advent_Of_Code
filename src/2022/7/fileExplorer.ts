@@ -3,6 +3,7 @@ import { IFile, File, Folder } from "./file.js";
 export class FileExplorer {
   public rootFolder: Folder;
   public currentFolder: Folder;
+  public totalSpace: number;
 
   constructor() {
     this.rootFolder = new Folder("/");
@@ -15,9 +16,9 @@ export class FileExplorer {
       return;
     }
     if (dirName === "/") {
-        this.currentFolder = this.rootFolder;
-        return;
-      }
+      this.currentFolder = this.rootFolder;
+      return;
+    }
 
     const folderTarget: IFile = this.currentFolder.getChildByName(dirName);
     if (!(folderTarget instanceof Folder)) {
@@ -45,5 +46,15 @@ export class FileExplorer {
 
   public addFile(dirName: string, fileSize: number) {
     this.currentFolder.addIFile(new File(dirName, fileSize));
+  }
+
+  public availableSpace(): number {
+    return this.totalSpace - this.rootFolder.size;
+  }
+  public folderToAchieveSpace(spaceRequired: number): Folder {
+    const requiredSpaceToDelete = spaceRequired - this.availableSpace();
+
+    if (requiredSpaceToDelete < 0) return null;
+    return this.rootFolder.smallestFolderAboveThreshold(requiredSpaceToDelete);
   }
 }

@@ -1,7 +1,10 @@
 import { File, Folder } from "../../src/2022/7/file.js";
 import { FileExplorer } from "../../src/2022/7/fileExplorer.js";
 import { Terminal } from "../../src/2022/7/terminal.js";
-import { foldersBelowThresholdTotalSize } from "../../src/2022/7/7storageCleaner.js";
+import {
+  foldersBelowThresholdTotalSize,
+  folderToDeleteToAchieveSpace,
+} from "../../src/2022/7/7storageCleaner.js";
 
 describe("Seventh problem from Advent Code 2022", () => {
   describe("Tests for the first part of the problem", () => {
@@ -239,7 +242,66 @@ describe("Seventh problem from Advent Code 2022", () => {
     it("Test with input.txt", async () => {
       const result = await foldersBelowThresholdTotalSize(100000, "input.txt");
 
-      expect(result).toEqual(95437);
+      expect(result).toEqual(1783610);
+    });
+  });
+
+  describe("Tests for the second part of the problem", () => {
+    it("Folder calculates the smallest folder below certain threshold", () => {
+      const folderA = new Folder("a");
+      const folderB = new Folder("b");
+      const folderC = new Folder("c");
+      const fileA = new File("a.txt", 20);
+      const fileB = new File("b.txt", 50);
+      const fileC = new File("c.txt", 100);
+
+      folderA.addIFile(folderB);
+      folderA.addIFile(folderC);
+      folderA.addIFile(fileA);
+      folderB.addIFile(fileB);
+      folderC.addIFile(fileC);
+
+      const result = folderA.smallestFolderAboveThreshold(100);
+      expect(result).toBe(folderC);
+    });
+
+    it("File explorer returns right total space", () => {
+      const fileExplorer = new FileExplorer();
+      fileExplorer.addFile("a.txt", 100);
+      fileExplorer.addFile("b.txt", 105);
+      fileExplorer.totalSpace = 500;
+
+      expect(fileExplorer.availableSpace()).toEqual(295);
+    });
+
+    it("File explorer returns folder required to clean space", () => {
+      const fileExplorer = new FileExplorer();
+      fileExplorer.addFile("a.txt", 100);
+      fileExplorer.addFolder("a");
+      fileExplorer.navigateTo("a");
+      fileExplorer.addFile("b.txt", 105);
+      fileExplorer.totalSpace = 500;
+
+      const folderToClean = fileExplorer.folderToAchieveSpace(400);
+      expect(folderToClean.size).toEqual(105);
+    });
+
+    it("Test with test.txt", async () => {
+      const result = await folderToDeleteToAchieveSpace(
+        70000000,
+        30000000,
+        "test.txt"
+      );
+      expect(result).toEqual(24933642);
+    });
+
+    it("Test with input.txt", async () => {
+      const result = await folderToDeleteToAchieveSpace(
+        70000000,
+        30000000,
+        "input.txt"
+      );
+      expect(result).toEqual(4370655);
     });
   });
 });
