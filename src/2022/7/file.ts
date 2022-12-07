@@ -60,16 +60,6 @@ export class Folder implements IFile {
         folders.push(...iFile.allFoldersInsideFolder());
       }
     }
-
-    // const iFiles: IFile[] = this.iFiles.flatMap((iFile) => {
-    //   if (iFile instanceof Folder) {
-    //     const folder = iFile as Folder;
-    //     return [iFile, ...folder.iFiles];
-    //   }
-    // });
-    // const folders: Folder[] = iFiles.filter(
-    //   (iFile) => iFile instanceof Folder
-    // ) as Folder[];
     return folders;
   }
 }
