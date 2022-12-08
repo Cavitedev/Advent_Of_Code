@@ -1,4 +1,4 @@
-import { calorieCounter } from "./1calorieCounter.js";
+import { calorieCounter } from "./1.js";
 
 describe("First problem from Advent Code 2022", () => {
   it("Top 1 from input.txt returns right value", async () => {

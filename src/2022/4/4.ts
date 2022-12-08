@@ -1,4 +1,4 @@
-import {readFileLines} from "../../common/readfileLines.js"
+import { readFileLines } from "../../common/readfileLines.js";
 import { ElvesCleaningSections } from "./elvesCleaningSections.js";
 
 export async function amountOfElvesOnCleanOverlap(
