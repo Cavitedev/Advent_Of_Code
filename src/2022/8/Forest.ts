@@ -1,5 +1,11 @@
 import { Tree } from "./Tree.js";
-import { West, North, East, South, Orientation } from "./Orientation.js";
+import {
+  West,
+  North,
+  East,
+  South,
+  Direction,
+} from "./Direction.js";
 
 export class Forest {
   public trees: Tree[][];
@@ -46,7 +52,7 @@ export class Forest {
     for (let i = 0; i < this.trees.length; i++) {
       for (let j = 0; j < this.trees[i].length; j++) {
         const tree = this.trees[i][j];
-        for (const orientation of Orientation.Orientations()) {
+        for (const orientation of Direction.Directions()) {
           this.checkAmountOfVisibleTrees(i, j, tree, orientation);
         }
       }
@@ -57,7 +63,7 @@ export class Forest {
     i: number,
     j: number,
     tree: Tree,
-    orientation: Orientation
+    orientation: Direction
   ) {
     const trees = this.treesFromTowards(i, j, orientation);
     const visibleTreesLeft = Forest.VisibleTreesFromHeightThroughLine(
@@ -70,7 +76,7 @@ export class Forest {
   public treesFromTowards(
     i: number,
     j: number,
-    orientation: Orientation
+    orientation: Direction
   ): Tree[] {
     return orientation.matrixElements(i, j, this.trees);
   }

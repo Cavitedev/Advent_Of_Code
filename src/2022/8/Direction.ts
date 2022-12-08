@@ -1,11 +1,11 @@
 import { Tree, VisibilityDirection } from "./Tree.js";
 
-export abstract class Orientation {
-  public static Orientations(): Orientation[] {
+export abstract class Direction {
+  public static Directions(): Direction[] {
     return [West.Instance, North.Instance, East.Instance, South.Instance];
   }
 
-  public abstract opposite(): Orientation;
+  public abstract opposite(): Direction;
   public abstract getVisibility(tree: Tree): VisibilityDirection;
 
   /**
@@ -42,14 +42,14 @@ export abstract class Orientation {
   public abstract getLine<T>(lineIndex: number, matrix: T[][]): T[];
 }
 
-export class West extends Orientation {
+export class West extends Direction {
   private static _instance: West;
 
   public static get Instance() {
     return this._instance || (this._instance = new this());
   }
 
-  public opposite(): Orientation {
+  public opposite(): Direction {
     return East.Instance;
   }
 
@@ -72,14 +72,14 @@ export class West extends Orientation {
   }
 }
 
-export class North extends Orientation {
+export class North extends Direction {
   private static _instance: North;
 
   public static get Instance() {
     return this._instance || (this._instance = new this());
   }
 
-  public opposite(): Orientation {
+  public opposite(): Direction {
     return South.Instance;
   }
 
@@ -102,14 +102,14 @@ export class North extends Orientation {
   }
 }
 
-export class East extends Orientation {
+export class East extends Direction {
   private static _instance: East;
 
   public static get Instance() {
     return this._instance || (this._instance = new this());
   }
 
-  public opposite(): Orientation {
+  public opposite(): Direction {
     return West.Instance;
   }
 
@@ -132,14 +132,14 @@ export class East extends Orientation {
   }
 }
 
-export class South extends Orientation {
+export class South extends Direction {
   private static _instance: South;
 
   public static get Instance() {
     return this._instance || (this._instance = new this());
   }
 
-  public opposite(): Orientation {
+  public opposite(): Direction {
     return North.Instance;
   }
 

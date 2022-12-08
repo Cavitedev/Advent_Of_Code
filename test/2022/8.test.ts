@@ -4,8 +4,7 @@ import {
   North,
   East,
   South,
-  Orientation,
-} from "../../src/2022/8/Orientation";
+} from "../../src/2022/8/Direction";
 import { Forest } from "../../src/2022/8/Forest.js";
 import {
   bestScenicValueInForest,
