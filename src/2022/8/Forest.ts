@@ -52,8 +52,8 @@ export class Forest {
     for (let i = 0; i < this.trees.length; i++) {
       for (let j = 0; j < this.trees[i].length; j++) {
         const tree = this.trees[i][j];
-        for (const orientation of Direction.Directions()) {
-          this.checkAmountOfVisibleTrees(i, j, tree, orientation);
+        for (const direction of Direction.Directions()) {
+          this.checkAmountOfVisibleTrees(i, j, tree, direction);
         }
       }
     }
@@ -63,22 +63,22 @@ export class Forest {
     i: number,
     j: number,
     tree: Tree,
-    orientation: Direction
+    direction: Direction
   ) {
-    const trees = this.treesFromTowards(i, j, orientation);
+    const trees = this.treesFromTowards(i, j, direction);
     const visibleTreesLeft = Forest.VisibleTreesFromHeightThroughLine(
       tree.height,
       trees
     );
-    orientation.getVisibility(tree).visibleTrees = visibleTreesLeft.length;
+    direction.getVisibility(tree).visibleTrees = visibleTreesLeft.length;
   }
 
   public treesFromTowards(
     i: number,
     j: number,
-    orientation: Direction
+    direction: Direction
   ): Tree[] {
-    return orientation.matrixElements(i, j, this.trees);
+    return direction.matrixElements(i, j, this.trees);
   }
 
   private static VisibleTreesFromHeightThroughLine(
