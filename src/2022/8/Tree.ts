@@ -9,21 +9,6 @@ export class Tree {
       .map(() => new VisibilityDirection());
   }
 
-  public get leftVisibility(): VisibilityDirection {
-    return this.visibilityDirections[0];
-  }
-
-  public get upVisibility(): VisibilityDirection {
-    return this.visibilityDirections[1];
-  }
-
-  public get rightVisibility(): VisibilityDirection {
-    return this.visibilityDirections[2];
-  }
-
-  public get downVisibility(): VisibilityDirection {
-    return this.visibilityDirections[3];
-  }
   public isVisible(): boolean {
     return this.visibilityDirections.some((tree) => tree.isVisible);
   }
@@ -53,5 +38,57 @@ export class VisibilityDirection {
   public set isVisible(isVisible: boolean) {
     this._isVisible = isVisible;
     this.hasChecked = true;
+  }
+}
+
+export abstract class Orientation {
+  public abstract getVisibility(tree: Tree): VisibilityDirection;
+}
+
+export class West extends Orientation {
+  private static _instance: West;
+
+  public static get Instance() {
+    return this._instance || (this._instance = new this());
+  }
+
+  public getVisibility(tree: Tree) {
+    return tree.visibilityDirections[0];
+  }
+}
+
+export class North extends Orientation {
+  private static _instance: North;
+
+  public static get Instance() {
+    return this._instance || (this._instance = new this());
+  }
+
+  public getVisibility(tree: Tree) {
+    return tree.visibilityDirections[1];
+  }
+}
+
+export class East extends Orientation {
+  private static _instance: East;
+
+  public static get Instance() {
+    return this._instance || (this._instance = new this());
+  }
+
+  public getVisibility(tree: Tree) {
+    return tree.visibilityDirections[2];
+  }
+}
+
+export class South extends Orientation {
+  private static _instance: South;
+
+  public static get Instance() {
+    return this._instance || (this._instance = new this());
+  }
+
+  public getVisibility(tree: Tree) {
+    return tree.visibilityDirections[3];
   }
 }

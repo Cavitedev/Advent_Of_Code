@@ -1,4 +1,4 @@
-import { Tree } from "./Tree.js";
+import { Tree, West, North, East, South } from "./Tree.js";
 
 export class Forest {
   public trees: Tree[][];
@@ -26,7 +26,7 @@ export class Forest {
       if (leftVisibility) {
         maximumHeightLeft = height;
       }
-      tree.leftVisibility.isVisible = leftVisibility;
+      West.Instance.getVisibility(tree).isVisible = leftVisibility;
       treeRow.push(tree);
     }
 
@@ -38,7 +38,7 @@ export class Forest {
       if (rightVisibility) {
         maximumHeightRight = height;
       }
-      tree.rightVisibility.isVisible = rightVisibility;
+      East.Instance.getVisibility(tree).isVisible = rightVisibility;
     }
 
     this.trees.push(treeRow);
@@ -54,7 +54,7 @@ export class Forest {
         if (upVisibility) {
           maximumHeightUp = height;
         }
-        tree.upVisibility.isVisible = upVisibility;
+        North.Instance.getVisibility(tree).isVisible = upVisibility;
       }
 
       let maximumHeightDown = -1;
@@ -65,7 +65,7 @@ export class Forest {
         if (downVisibility) {
           maximumHeightDown = height;
         }
-        tree.downVisibility.isVisible = downVisibility;
+        South.Instance.getVisibility(tree).isVisible = downVisibility;
       }
     }
   }
@@ -79,28 +79,31 @@ export class Forest {
           tree.height,
           leftTrees
         );
-        tree.leftVisibility.visibleTrees = visibleTreesLeft.length;
+        West.Instance.getVisibility(tree).visibleTrees =
+          visibleTreesLeft.length;
 
         const upTrees = this.treesUpFrom(i, j);
         const visibleTreesUp = Forest.VisibleTreesFromHeightThroughLine(
           tree.height,
           upTrees
         );
-        tree.upVisibility.visibleTrees = visibleTreesUp.length;
+        North.Instance.getVisibility(tree).visibleTrees = visibleTreesUp.length;
 
         const rightTrees = this.treesRightFrom(i, j);
         const visibleTreesRight = Forest.VisibleTreesFromHeightThroughLine(
           tree.height,
           rightTrees
         );
-        tree.rightVisibility.visibleTrees = visibleTreesRight.length;
+        East.Instance.getVisibility(tree).visibleTrees =
+          visibleTreesRight.length;
 
         const downTrees = this.treesDownFrom(i, j);
         const visibleTreesDown = Forest.VisibleTreesFromHeightThroughLine(
           tree.height,
           downTrees
         );
-        tree.downVisibility.visibleTrees = visibleTreesDown.length;
+        South.Instance.getVisibility(tree).visibleTrees =
+          visibleTreesDown.length;
       }
     }
   }

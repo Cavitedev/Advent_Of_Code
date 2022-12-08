@@ -1,4 +1,11 @@
-import { Tree, VisibilityDirection } from "../../src/2022/8/Tree.js";
+import {
+  Tree,
+  VisibilityDirection,
+  West,
+  North,
+  East,
+  South,
+} from "../../src/2022/8/Tree.js";
 import { Forest } from "../../src/2022/8/Forest.js";
 import {
   bestScenicValueInForest,
@@ -27,31 +34,31 @@ describe("Eigth problem from Advent Code 2022", () => {
 
     it("First visibility is the left one", () => {
       const tree = new Tree(1);
-      expect(tree.leftVisibility).toBe(tree.visibilityDirections[0]);
+      expect(West.Instance.getVisibility(tree)).toBe(tree.visibilityDirections[0]);
     });
 
     it("Second visibility is the up one", () => {
       const tree = new Tree(1);
-      expect(tree.upVisibility).toBe(tree.visibilityDirections[1]);
+      expect(North.Instance.getVisibility(tree)).toBe(tree.visibilityDirections[1]);
     });
 
     it("Right visibility is the right one", () => {
       const tree = new Tree(1);
-      expect(tree.rightVisibility).toBe(tree.visibilityDirections[2]);
+      expect(East.Instance.getVisibility(tree)).toBe(tree.visibilityDirections[2]);
     });
 
     it("Fourth visibility is the down one", () => {
       const tree = new Tree(1);
-      expect(tree.downVisibility).toBe(tree.visibilityDirections[3]);
+      expect(South.Instance.getVisibility(tree)).toBe(tree.visibilityDirections[3]);
     });
 
     it("Changing left visibility doesn't affect other visibilities", () => {
       const tree = new Tree(1);
-      tree.leftVisibility.isVisible = true;
-      expect(tree.leftVisibility.isVisible).toEqual(true);
-      expect(tree.upVisibility.isVisible).toEqual(false);
-      expect(tree.rightVisibility.isVisible).toEqual(false);
-      expect(tree.downVisibility.isVisible).toEqual(false);
+      West.Instance.getVisibility(tree).isVisible = true;
+      expect(West.Instance.getVisibility(tree).isVisible).toEqual(true);
+      expect(North.Instance.getVisibility(tree).isVisible).toEqual(false);
+      expect(East.Instance.getVisibility(tree).isVisible).toEqual(false);
+      expect(South.Instance.getVisibility(tree).isVisible).toEqual(false);
     });
 
     it("Setting all sides of a tree as invisible makes it invisible", () => {
@@ -67,7 +74,7 @@ describe("Eigth problem from Advent Code 2022", () => {
       tree.visibilityDirections.forEach(
         (visibility) => (visibility.isVisible = false)
       );
-      tree.downVisibility.isVisible = true;
+      South.Instance.getVisibility(tree).isVisible = true;
       expect(tree.isVisible()).toEqual(true);
     });
 
@@ -76,15 +83,15 @@ describe("Eigth problem from Advent Code 2022", () => {
       const forest = new Forest();
 
       const trees = [[new Tree(1), new Tree(3), new Tree(1), new Tree(2)]];
-      trees[0][0].leftVisibility.isVisible = true;
-      trees[0][1].leftVisibility.isVisible = true;
-      trees[0][2].leftVisibility.isVisible = false;
-      trees[0][3].leftVisibility.isVisible = false;
+      West.Instance.getVisibility(trees[0][0]).isVisible = true;
+      West.Instance.getVisibility(trees[0][1]).isVisible = true;
+      West.Instance.getVisibility(trees[0][2]).isVisible = false;
+      West.Instance.getVisibility(trees[0][3]).isVisible = false;
 
-      trees[0][0].rightVisibility.isVisible = false;
-      trees[0][1].rightVisibility.isVisible = true;
-      trees[0][2].rightVisibility.isVisible = false;
-      trees[0][3].rightVisibility.isVisible = true;
+      East.Instance.getVisibility(trees[0][0]).isVisible = false;
+      East.Instance.getVisibility(trees[0][1]).isVisible = true;
+      East.Instance.getVisibility(trees[0][2]).isVisible = false;
+      East.Instance.getVisibility(trees[0][3]).isVisible = true;
 
       forest.addRow(line);
       expect(forest.trees).toEqual(trees);
@@ -97,10 +104,10 @@ describe("Eigth problem from Advent Code 2022", () => {
       forest.addRow("141");
 
       const expectedMiddleTree = new Tree(2);
-      expectedMiddleTree.leftVisibility.isVisible = false;
-      expectedMiddleTree.upVisibility.isVisible = false;
-      expectedMiddleTree.rightVisibility.isVisible = false;
-      expectedMiddleTree.downVisibility.isVisible = false;
+      West.Instance.getVisibility(expectedMiddleTree).isVisible = false;
+      North.Instance.getVisibility(expectedMiddleTree).isVisible = false;
+      East.Instance.getVisibility(expectedMiddleTree).isVisible = false;
+      South.Instance.getVisibility(expectedMiddleTree).isVisible = false;
 
       forest.checkVerticalVisibility();
 
@@ -127,10 +134,10 @@ describe("Eigth problem from Advent Code 2022", () => {
 
     it("Tree scenic value is the product of each amount of visible trees", () => {
       const tree = new Tree(1);
-      tree.leftVisibility.visibleTrees = 2;
-      tree.upVisibility.visibleTrees = 1;
-      tree.rightVisibility.visibleTrees = 1;
-      tree.downVisibility.visibleTrees = 3;
+      West.Instance.getVisibility(tree).visibleTrees = 2;
+      North.Instance.getVisibility(tree).visibleTrees = 1;
+      East.Instance.getVisibility(tree).visibleTrees = 1;
+      South.Instance.getVisibility(tree).visibleTrees = 3;
 
       // 2 * 1 * 1 * 3
       expect(tree.scenicScore()).toEqual(6);
@@ -187,10 +194,10 @@ describe("Eigth problem from Advent Code 2022", () => {
       forest.addRow("1411");
 
       const expectedMiddleTree = new Tree(2);
-      expectedMiddleTree.leftVisibility.visibleTrees = 1;
-      expectedMiddleTree.upVisibility.visibleTrees = 1;
-      expectedMiddleTree.rightVisibility.visibleTrees = 2;
-      expectedMiddleTree.downVisibility.visibleTrees = 1;
+      West.Instance.getVisibility(expectedMiddleTree).visibleTrees = 1;
+      North.Instance.getVisibility(expectedMiddleTree).visibleTrees = 1;
+      East.Instance.getVisibility(expectedMiddleTree).visibleTrees = 2;
+      South.Instance.getVisibility(expectedMiddleTree).visibleTrees = 1;
 
       forest.checkVerticalVisibility();
       forest.checkAmountOfVisibleTreesOnEachDirection();
