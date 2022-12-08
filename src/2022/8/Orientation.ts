@@ -1,15 +1,41 @@
 import { Tree, VisibilityDirection } from "./Tree.js";
 
 export abstract class Orientation {
+  public abstract opposite(): Orientation;
   public abstract getVisibility(tree: Tree): VisibilityDirection;
 
   /**
+   * Updates visibility on certain orientation on a row or column in tree matrix
+   * @param lineIndex Row or column index to check
+   * @param trees  Tree matrix
+   */
+  public checkVisibility(lineIndex: number, trees: Tree[][]): void {
+    const lineTrees = this.opposite().getLine(lineIndex, trees);
+    let maxHeight = -1;
+    for (const tree of lineTrees) {
+      const height = tree.height;
+      const isVisible = height > maxHeight;
+      if (isVisible) {
+        maxHeight = height;
+      }
+      this.getVisibility(tree).isVisible = isVisible;
+    }
+  }
+
+  /**
    * Returns elements from certain point in a matrix towards that orientation
-   * @param i row index
-   * @param j column index
+   * @param i Row index
+   * @param j Column index
    * @param matrix
    */
   public abstract matrixElements<T>(i: number, j: number, matrix: T[][]): T[];
+
+  /**
+   * Returns entire line of matrix moving towards orientation
+   * @param lineIndex
+   * @param matrix
+   */
+  public abstract getLine<T>(lineIndex: number, matrix: T[][]): T[];
 }
 
 export class West extends Orientation {
@@ -17,6 +43,10 @@ export class West extends Orientation {
 
   public static get Instance() {
     return this._instance || (this._instance = new this());
+  }
+
+  public opposite(): Orientation {
+    return East.Instance;
   }
 
   public getVisibility(tree: Tree) {
@@ -32,6 +62,10 @@ export class West extends Orientation {
 
     return elements;
   }
+
+  public getLine<T>(lineIndex: number, matrix: T[][]): T[] {
+    return this.matrixElements(lineIndex, matrix[lineIndex].length, matrix);
+  }
 }
 
 export class North extends Orientation {
@@ -39,6 +73,10 @@ export class North extends Orientation {
 
   public static get Instance() {
     return this._instance || (this._instance = new this());
+  }
+
+  public opposite(): Orientation {
+    return South.Instance;
   }
 
   public getVisibility(tree: Tree) {
@@ -54,6 +92,10 @@ export class North extends Orientation {
 
     return elements;
   }
+
+  public getLine<T>(lineIndex: number, matrix: T[][]): T[] {
+    return this.matrixElements(matrix.length, lineIndex, matrix);
+  }
 }
 
 export class East extends Orientation {
@@ -61,6 +103,10 @@ export class East extends Orientation {
 
   public static get Instance() {
     return this._instance || (this._instance = new this());
+  }
+
+  public opposite(): Orientation {
+    return West.Instance;
   }
 
   public getVisibility(tree: Tree) {
@@ -76,6 +122,10 @@ export class East extends Orientation {
 
     return elements;
   }
+
+  public getLine<T>(lineIndex: number, matrix: T[][]): T[] {
+    return this.matrixElements(lineIndex, -1, matrix);
+  }
 }
 
 export class South extends Orientation {
@@ -83,6 +133,10 @@ export class South extends Orientation {
 
   public static get Instance() {
     return this._instance || (this._instance = new this());
+  }
+
+  public opposite(): Orientation {
+    return North.Instance;
   }
 
   public getVisibility(tree: Tree) {
@@ -97,5 +151,9 @@ export class South extends Orientation {
     }
 
     return elements;
+  }
+
+  public getLine<T>(lineIndex: number, matrix: T[][]): T[] {
+    return this.matrixElements(-1, lineIndex, matrix);
   }
 }

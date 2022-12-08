@@ -18,35 +18,16 @@ export class Forest {
 
   public addRow(row: string) {
     const treeRow: Tree[] = [];
-    let maximumHeightLeft = -1;
 
-    this._addRowTrees(row, treeRow);
-
-    for (let i = 0; i < row.length; i++) {
-      const height: number = +row.charAt(i);
-      const tree = treeRow[i];
-      const leftVisibility = height > maximumHeightLeft;
-      if (leftVisibility) {
-        maximumHeightLeft = height;
-      }
-      West.Instance.getVisibility(tree).isVisible = leftVisibility;
-    }
-
-    let maximumHeightRight = -1;
-    for (let i = row.length - 1; i >= 0; i--) {
-      const height: number = +row.charAt(i);
-      const tree = treeRow[i];
-      const rightVisibility = height > maximumHeightRight;
-      if (rightVisibility) {
-        maximumHeightRight = height;
-      }
-      East.Instance.getVisibility(tree).isVisible = rightVisibility;
-    }
-
+    this._addTreesToRow(row, treeRow);
     this.trees.push(treeRow);
+    const rowIndex = this.trees.length - 1;
+
+    West.Instance.checkVisibility(rowIndex, this.trees);
+    East.Instance.checkVisibility(rowIndex, this.trees);
   }
 
-  private _addRowTrees(row: string, treeRow: Tree[]) {
+  private _addTreesToRow(row: string, treeRow: Tree[]) {
     for (let i = 0; i < row.length; i++) {
       const height: number = +row.charAt(i);
       const tree = new Tree(height);
@@ -56,27 +37,8 @@ export class Forest {
 
   public checkVerticalVisibility() {
     for (let j = 0; j < this.trees[0].length; j++) {
-      let maximumHeightUp = -1;
-      for (let i = 0; i < this.trees.length; i++) {
-        const tree = this.trees[i][j];
-        const height = tree.height;
-        const upVisibility = height > maximumHeightUp;
-        if (upVisibility) {
-          maximumHeightUp = height;
-        }
-        North.Instance.getVisibility(tree).isVisible = upVisibility;
-      }
-
-      let maximumHeightDown = -1;
-      for (let i = this.trees.length - 1; i >= 0; i--) {
-        const tree = this.trees[i][j];
-        const height = tree.height;
-        const downVisibility = height > maximumHeightDown;
-        if (downVisibility) {
-          maximumHeightDown = height;
-        }
-        South.Instance.getVisibility(tree).isVisible = downVisibility;
-      }
+      North.Instance.checkVisibility(j, this.trees);
+      South.Instance.checkVisibility(j, this.trees);
     }
   }
 
