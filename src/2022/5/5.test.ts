@@ -1,5 +1,5 @@
-import { stacksCraneSimulation } from "../../src/2022/5/5suplyStacks.js";
-import { CrateMover9000, CrateMover9001 } from "../../src/2022/5/crateMover.js";
+import { stacksCraneSimulation } from "./5suplyStacks.js";
+import { CrateMover9000, CrateMover9001 } from "./crateMover.js";
 
 describe("Fifth problem from Advent Code 2022", () => {
   describe("Tests for the first part of the problem", () => {

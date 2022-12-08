@@ -1,15 +1,7 @@
-import { Tree, VisibilityDirection } from "../../src/2022/8/Tree.js";
-import {
-  West,
-  North,
-  East,
-  South,
-} from "../../src/2022/8/Direction";
-import { Forest } from "../../src/2022/8/Forest.js";
-import {
-  bestScenicValueInForest,
-  treeHouseCounter,
-} from "../../src/2022/8/8treeHouse.js";
+import { Tree, VisibilityDirection } from "./Tree.js";
+import { West, North, East, South } from "./Direction.js";
+import { Forest } from "./Forest.js";
+import { bestScenicValueInForest, treeHouseCounter } from "./8treeHouse.js";
 
 describe("Eigth problem from Advent Code 2022", () => {
   describe("First part of the problem", () => {

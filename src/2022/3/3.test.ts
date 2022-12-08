@@ -1,8 +1,8 @@
 import {
   runsackPrioritiesSum,
   runsackPrioritiesSumGroups,
-} from "../../src/2022/3/3runsackReorganization.js";
-import { Runsack } from "../../src/2022/3/Runsack.js";
+} from "./3runsackReorganization.js";
+import { Runsack } from "./Runsack.js";
 
 describe("Third problem from Advent Code 2022", () => {
   describe("Tests for the first part of the problem", () => {

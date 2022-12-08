@@ -1,10 +1,10 @@
-import { File, Folder } from "../../src/2022/7/file.js";
-import { FileExplorer } from "../../src/2022/7/fileExplorer.js";
-import { Terminal } from "../../src/2022/7/terminal.js";
+import { File, Folder } from "./file.js";
+import { FileExplorer } from "./fileExplorer.js";
+import { Terminal } from "./terminal.js";
 import {
   foldersBelowThresholdTotalSize,
   folderToDeleteToAchieveSpace,
-} from "../../src/2022/7/7storageCleaner.js";
+} from "./7storageCleaner.js";
 
 describe("Seventh problem from Advent Code 2022", () => {
   describe("Tests for the first part of the problem", () => {

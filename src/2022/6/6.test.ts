@@ -1,5 +1,5 @@
-import { detectMarkerOnSingal } from "../../src/2022/6/6tuningProblem";
-import { SignalTuner } from "../../src/2022/6/SignalTuner";
+import { detectMarkerOnSingal } from "./6tuningProblem.js";
+import { SignalTuner } from "./SignalTuner.js";
 
 describe("Fifth problem from Advent Code 2022", () => {
   describe("Tests for the first part of the problem", () => {

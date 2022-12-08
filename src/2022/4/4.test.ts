@@ -1,8 +1,8 @@
-import { amountOfElvesOnCleanOverlap } from "../../src/2022/4/4campCleanup.js";
+import { amountOfElvesOnCleanOverlap } from "./4campCleanup.js";
 import {
   ElvesCleaningSections,
   ElveCleaningSections,
-} from "../../src/2022/4/elvesCleaningSections.js";
+} from "./elvesCleaningSections.js";
 
 describe("Fourth problem from Advent Code 2022", () => {
   describe("Tests for the first part of the problem", () => {
