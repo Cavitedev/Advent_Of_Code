@@ -1,11 +1,5 @@
 import { Tree } from "./Tree.js";
-import {
-  West,
-  North,
-  East,
-  South,
-  Direction,
-} from "./Direction.js";
+import { West, North, East, South, Direction } from "./Direction.js";
 
 export class Forest {
   public trees: Tree[][];
@@ -66,22 +60,18 @@ export class Forest {
     direction: Direction
   ) {
     const trees = this.treesFromTowards(i, j, direction);
-    const visibleTreesLeft = Forest.VisibleTreesFromHeightThroughLine(
+    const visibleTreesLeft = Forest._VisibleTreesFromHeightThroughLine(
       tree.height,
       trees
     );
     direction.getVisibility(tree).visibleTrees = visibleTreesLeft.length;
   }
 
-  public treesFromTowards(
-    i: number,
-    j: number,
-    direction: Direction
-  ): Tree[] {
+  public treesFromTowards(i: number, j: number, direction: Direction): Tree[] {
     return direction.matrixElements(i, j, this.trees);
   }
 
-  private static VisibleTreesFromHeightThroughLine(
+  private static _VisibleTreesFromHeightThroughLine(
     referenceHeight: number,
     trees: Tree[]
   ): Tree[] {
