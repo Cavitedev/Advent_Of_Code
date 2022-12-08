@@ -1,6 +1,10 @@
 import { Tree, VisibilityDirection } from "./Tree.js";
 
 export abstract class Orientation {
+  public static Orientations(): Orientation[] {
+    return [West.Instance, North.Instance, East.Instance, South.Instance];
+  }
+
   public abstract opposite(): Orientation;
   public abstract getVisibility(tree: Tree): VisibilityDirection;
 

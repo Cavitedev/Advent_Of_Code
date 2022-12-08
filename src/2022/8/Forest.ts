@@ -46,38 +46,25 @@ export class Forest {
     for (let i = 0; i < this.trees.length; i++) {
       for (let j = 0; j < this.trees[i].length; j++) {
         const tree = this.trees[i][j];
-        const leftTrees = this.treesFromTowards(i, j, West.Instance);
-        const visibleTreesLeft = Forest.VisibleTreesFromHeightThroughLine(
-          tree.height,
-          leftTrees
-        );
-        West.Instance.getVisibility(tree).visibleTrees =
-          visibleTreesLeft.length;
-
-        const upTrees = this.treesFromTowards(i, j, North.Instance);
-        const visibleTreesUp = Forest.VisibleTreesFromHeightThroughLine(
-          tree.height,
-          upTrees
-        );
-        North.Instance.getVisibility(tree).visibleTrees = visibleTreesUp.length;
-
-        const rightTrees = this.treesFromTowards(i, j, East.Instance);
-        const visibleTreesRight = Forest.VisibleTreesFromHeightThroughLine(
-          tree.height,
-          rightTrees
-        );
-        East.Instance.getVisibility(tree).visibleTrees =
-          visibleTreesRight.length;
-
-        const downTrees = this.treesFromTowards(i, j, South.Instance);
-        const visibleTreesDown = Forest.VisibleTreesFromHeightThroughLine(
-          tree.height,
-          downTrees
-        );
-        South.Instance.getVisibility(tree).visibleTrees =
-          visibleTreesDown.length;
+        for (const orientation of Orientation.Orientations()) {
+          this.checkAmountOfVisibleTrees(i, j, tree, orientation);
+        }
       }
     }
+  }
+
+  private checkAmountOfVisibleTrees(
+    i: number,
+    j: number,
+    tree: Tree,
+    orientation: Orientation
+  ) {
+    const trees = this.treesFromTowards(i, j, orientation);
+    const visibleTreesLeft = Forest.VisibleTreesFromHeightThroughLine(
+      tree.height,
+      trees
+    );
+    orientation.getVisibility(tree).visibleTrees = visibleTreesLeft.length;
   }
 
   public treesFromTowards(
