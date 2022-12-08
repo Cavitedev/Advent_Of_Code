@@ -1,11 +1,11 @@
+import { Tree, VisibilityDirection } from "../../src/2022/8/Tree.js";
 import {
-  Tree,
-  VisibilityDirection,
   West,
   North,
   East,
   South,
-} from "../../src/2022/8/Tree.js";
+  Orientation,
+} from "../../src/2022/8/Orientation";
 import { Forest } from "../../src/2022/8/Forest.js";
 import {
   bestScenicValueInForest,
@@ -34,22 +34,30 @@ describe("Eigth problem from Advent Code 2022", () => {
 
     it("First visibility is the left one", () => {
       const tree = new Tree(1);
-      expect(West.Instance.getVisibility(tree)).toBe(tree.visibilityDirections[0]);
+      expect(West.Instance.getVisibility(tree)).toBe(
+        tree.visibilityDirections[0]
+      );
     });
 
     it("Second visibility is the up one", () => {
       const tree = new Tree(1);
-      expect(North.Instance.getVisibility(tree)).toBe(tree.visibilityDirections[1]);
+      expect(North.Instance.getVisibility(tree)).toBe(
+        tree.visibilityDirections[1]
+      );
     });
 
     it("Right visibility is the right one", () => {
       const tree = new Tree(1);
-      expect(East.Instance.getVisibility(tree)).toBe(tree.visibilityDirections[2]);
+      expect(East.Instance.getVisibility(tree)).toBe(
+        tree.visibilityDirections[2]
+      );
     });
 
     it("Fourth visibility is the down one", () => {
       const tree = new Tree(1);
-      expect(South.Instance.getVisibility(tree)).toBe(tree.visibilityDirections[3]);
+      expect(South.Instance.getVisibility(tree)).toBe(
+        tree.visibilityDirections[3]
+      );
     });
 
     it("Changing left visibility doesn't affect other visibilities", () => {
@@ -149,7 +157,7 @@ describe("Eigth problem from Advent Code 2022", () => {
       forest.addRow("4223");
       forest.addRow("1451");
 
-      const treesLeft = forest.treesLeftFrom(1, 2);
+      const treesLeft = forest.treesFromTowards(1, 2, West.Instance);
       const treesHeight = treesLeft.map((tree) => tree.height);
       expect(treesHeight).toEqual([2, 4]);
     });
@@ -160,7 +168,7 @@ describe("Eigth problem from Advent Code 2022", () => {
       forest.addRow("4223");
       forest.addRow("1451");
 
-      const treesLeft = forest.treesUpFrom(1, 2);
+      const treesLeft = forest.treesFromTowards(1, 2, North.Instance);
       const treesHeight = treesLeft.map((tree) => tree.height);
       expect(treesHeight).toEqual([1]);
     });
@@ -171,7 +179,7 @@ describe("Eigth problem from Advent Code 2022", () => {
       forest.addRow("4223");
       forest.addRow("1451");
 
-      const treesRight = forest.treesRightFrom(1, 2);
+      const treesRight = forest.treesFromTowards(1, 2, East.Instance);
       const treesHeight = treesRight.map((tree) => tree.height);
       expect(treesHeight).toEqual([3]);
     });
@@ -182,7 +190,7 @@ describe("Eigth problem from Advent Code 2022", () => {
       forest.addRow("4223");
       forest.addRow("1451");
 
-      const treesDown = forest.treesDownFrom(1, 2);
+      const treesDown = forest.treesFromTowards(1, 2, South.Instance);
       const treesHeight = treesDown.map((tree) => tree.height);
       expect(treesHeight).toEqual([5]);
     });
