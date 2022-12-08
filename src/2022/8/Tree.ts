@@ -9,10 +9,6 @@ export class Tree {
       .map(() => new VisibilityDirection());
   }
 
-  public isVisible(): boolean{
-    return this.visibilityDirections.some(tree => tree.isVisible);
-  }
-
   public get leftVisibility(): VisibilityDirection {
     return this.visibilityDirections[0];
   }
@@ -28,15 +24,26 @@ export class Tree {
   public get downVisibility(): VisibilityDirection {
     return this.visibilityDirections[3];
   }
+  public isVisible(): boolean {
+    return this.visibilityDirections.some((tree) => tree.isVisible);
+  }
+
+  public scenicScore() {
+    return this.visibilityDirections.reduce((prev, curr) => {
+      return prev * curr.visibleTrees;
+    }, 1);
+  }
 }
 
 export class VisibilityDirection {
   private _isVisible: boolean;
-  hasChecked: boolean;
+  public hasChecked: boolean;
+  public visibleTrees: number;
 
   constructor() {
     this._isVisible = false;
     this.hasChecked = false;
+    this.visibleTrees = 0;
   }
 
   public get isVisible(): boolean {

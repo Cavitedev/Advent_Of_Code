@@ -16,6 +16,21 @@ export async function treeHouseCounter(
   return visibleTreesCount;
 }
 
+export async function bestScenicValueInForest(
+  file: String = "input.txt"
+): Promise<number> {
+  const rl = readFileByLine(file);
+
+  const forest = new Forest();
+  for await (const line of rl) {
+    forest.addRow(line);
+  }
+  forest.checkVerticalVisibility();
+  forest.checkAmountOfVisibleTreesOnEachDirection();
+  const bestScenicValue = forest.bestScenicValue();
+  return bestScenicValue;
+}
+
 function readFileByLine(file: String): readline.Interface {
   const fileStream = fs.createReadStream("src/2022/8/" + file, {
     encoding: "utf8",

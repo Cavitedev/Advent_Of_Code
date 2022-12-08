@@ -1,6 +1,9 @@
 import { Tree, VisibilityDirection } from "../../src/2022/8/Tree.js";
 import { Forest } from "../../src/2022/8/Forest.js";
-import { treeHouseCounter } from "../../src/2022/8/8treeHouse.js";
+import {
+  bestScenicValueInForest,
+  treeHouseCounter,
+} from "../../src/2022/8/8treeHouse.js";
 
 describe("Eigth problem from Advent Code 2022", () => {
   describe("First part of the problem", () => {
@@ -112,7 +115,98 @@ describe("Eigth problem from Advent Code 2022", () => {
 
     it("Test with input.txt", async () => {
       const visibleTrees: number = await treeHouseCounter("input.txt");
-      expect(visibleTrees).toEqual(21);
+      expect(visibleTrees).toEqual(1703);
+    });
+  });
+
+  describe("Second part of the problem", () => {
+    it("Visibility Direction has amount of trees visible starting at 0", () => {
+      const visibilityDirection = new VisibilityDirection();
+      expect(visibilityDirection.visibleTrees).toEqual(0);
+    });
+
+    it("Tree scenic value is the product of each amount of visible trees", () => {
+      const tree = new Tree(1);
+      tree.leftVisibility.visibleTrees = 2;
+      tree.upVisibility.visibleTrees = 1;
+      tree.rightVisibility.visibleTrees = 1;
+      tree.downVisibility.visibleTrees = 3;
+
+      // 2 * 1 * 1 * 3
+      expect(tree.scenicScore()).toEqual(6);
+    });
+
+    it("Trees left from", () => {
+      const forest = new Forest();
+      forest.addRow("1414");
+      forest.addRow("4223");
+      forest.addRow("1451");
+
+      const treesLeft = forest.treesLeftFrom(1, 2);
+      const treesHeight = treesLeft.map((tree) => tree.height);
+      expect(treesHeight).toEqual([2, 4]);
+    });
+
+    it("Trees up from", () => {
+      const forest = new Forest();
+      forest.addRow("1414");
+      forest.addRow("4223");
+      forest.addRow("1451");
+
+      const treesLeft = forest.treesUpFrom(1, 2);
+      const treesHeight = treesLeft.map((tree) => tree.height);
+      expect(treesHeight).toEqual([1]);
+    });
+
+    it("Trees right from", () => {
+      const forest = new Forest();
+      forest.addRow("1414");
+      forest.addRow("4223");
+      forest.addRow("1451");
+
+      const treesRight = forest.treesRightFrom(1, 2);
+      const treesHeight = treesRight.map((tree) => tree.height);
+      expect(treesHeight).toEqual([3]);
+    });
+
+    it("Trees down from", () => {
+      const forest = new Forest();
+      forest.addRow("1414");
+      forest.addRow("4223");
+      forest.addRow("1451");
+
+      const treesDown = forest.treesDownFrom(1, 2);
+      const treesHeight = treesDown.map((tree) => tree.height);
+      expect(treesHeight).toEqual([5]);
+    });
+
+    it("Check the amount of visible trees on each direction and returning ", () => {
+      const forest = new Forest();
+      forest.addRow("1414");
+      forest.addRow("4321");
+      forest.addRow("1411");
+
+      const expectedMiddleTree = new Tree(2);
+      expectedMiddleTree.leftVisibility.visibleTrees = 1;
+      expectedMiddleTree.upVisibility.visibleTrees = 1;
+      expectedMiddleTree.rightVisibility.visibleTrees = 2;
+      expectedMiddleTree.downVisibility.visibleTrees = 1;
+
+      forest.checkVerticalVisibility();
+      forest.checkAmountOfVisibleTreesOnEachDirection();
+
+      expect(forest.trees[1][1].scenicScore()).toEqual(2);
+      expect(forest.bestScenicValue()).toEqual(2);
+    });
+
+    it("Test with test.txt", async () => {
+      const bestScenicValue = await bestScenicValueInForest("test.txt");
+      expect(bestScenicValue).toEqual(8);
+    });
+
+    it("Test with input.txt", async () => {
+      const bestScenicValue = await bestScenicValueInForest("input.txt");
+      expect(bestScenicValue).toEqual(496650);
     });
   });
 });

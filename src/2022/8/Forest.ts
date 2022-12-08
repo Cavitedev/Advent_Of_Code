@@ -7,6 +7,14 @@ export class Forest {
     this.trees = [];
   }
 
+  public visibleTrees(): Tree[] {
+    return this.trees.flat().filter((tree) => tree.isVisible());
+  }
+
+  public bestScenicValue(): number {
+    return Math.max(...this.trees.flat().map((tree) => tree.scenicScore()));
+  }
+
   public addRow(row: string) {
     const treeRow: Tree[] = [];
     let maximumHeightLeft = -1;
@@ -62,7 +70,93 @@ export class Forest {
     }
   }
 
-  public visibleTrees(): Tree[] {
-    return this.trees.flat().filter((tree) => tree.isVisible());
+  public checkAmountOfVisibleTreesOnEachDirection() {
+    for (let i = 0; i < this.trees.length; i++) {
+      for (let j = 0; j < this.trees[i].length; j++) {
+        const tree = this.trees[i][j];
+        const leftTrees = this.treesLeftFrom(i, j);
+        const visibleTreesLeft = Forest.VisibleTreesFromHeightThroughLine(
+          tree.height,
+          leftTrees
+        );
+        tree.leftVisibility.visibleTrees = visibleTreesLeft.length;
+
+        const upTrees = this.treesUpFrom(i, j);
+        const visibleTreesUp = Forest.VisibleTreesFromHeightThroughLine(
+          tree.height,
+          upTrees
+        );
+        tree.upVisibility.visibleTrees = visibleTreesUp.length;
+
+        const rightTrees = this.treesRightFrom(i, j);
+        const visibleTreesRight = Forest.VisibleTreesFromHeightThroughLine(
+          tree.height,
+          rightTrees
+        );
+        tree.rightVisibility.visibleTrees = visibleTreesRight.length;
+
+        const downTrees = this.treesDownFrom(i, j);
+        const visibleTreesDown = Forest.VisibleTreesFromHeightThroughLine(
+          tree.height,
+          downTrees
+        );
+        tree.downVisibility.visibleTrees = visibleTreesDown.length;
+      }
+    }
+  }
+
+  public treesLeftFrom(i: number, j: number): Tree[] {
+    const trees: Tree[] = [];
+
+    for (let jIndex = j - 1; jIndex >= 0; jIndex--) {
+      trees.push(this.trees[i][jIndex]);
+    }
+
+    return trees;
+  }
+
+  public treesUpFrom(i: number, j: number): Tree[] {
+    const trees: Tree[] = [];
+
+    for (let iIndex = i - 1; iIndex >= 0; iIndex--) {
+      trees.push(this.trees[iIndex][j]);
+    }
+
+    return trees;
+  }
+
+  public treesRightFrom(i: number, j: number): Tree[] {
+    const trees: Tree[] = [];
+
+    for (let jIndex = j + 1; jIndex < this.trees[i].length; jIndex++) {
+      trees.push(this.trees[i][jIndex]);
+    }
+
+    return trees;
+  }
+
+  public treesDownFrom(i: number, j: number): Tree[] {
+    const trees: Tree[] = [];
+
+    for (let iIndex = i + 1; iIndex < this.trees.length; iIndex++) {
+      trees.push(this.trees[iIndex][j]);
+    }
+
+    return trees;
+  }
+
+  private static VisibleTreesFromHeightThroughLine(
+    referenceHeight: number,
+    trees: Tree[]
+  ): Tree[] {
+    const returnTrees: Tree[] = [];
+    for (const tree of trees) {
+      returnTrees.push(tree);
+      if (tree.height >= referenceHeight) {
+        break;
+      }
+    }
+
+    return returnTrees;
   }
 }
