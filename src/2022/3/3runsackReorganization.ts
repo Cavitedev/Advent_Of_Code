@@ -1,12 +1,11 @@
-import { default as fs } from "fs";
-import { default as readline } from "readline";
+import {readFileLines} from "../../common/readfileLines.js"
 import { Runsack } from "./Runsack.js";
 
 export async function runsackPrioritiesSum(
   compartments: number = 2,
-  file: String = "input.txt"
+  file: string = "input.txt"
 ): Promise<number> {
-  const rl = readFileByLine(file);
+  const rl = readFileLines(__dirname, file);
 
   let sumPriorities = 0;
 
@@ -22,9 +21,9 @@ export async function runsackPrioritiesSum(
 
 export async function runsackPrioritiesSumGroups(
   groupsCount: number = 3,
-  file: String = "input.txt"
+  file: string = "input.txt"
 ): Promise<number> {
-  const rl = readFileByLine(file);
+  const rl = readFileLines(__dirname, file);
 
   let sumPriorities = 0;
 
@@ -46,14 +45,3 @@ export async function runsackPrioritiesSumGroups(
   return sumPriorities;
 }
 
-function readFileByLine(file: String): readline.Interface {
-  const fileStream = fs.createReadStream("src/2022/3/" + file, {
-    encoding: "utf8",
-  });
-
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
-  });
-  return rl;
-}

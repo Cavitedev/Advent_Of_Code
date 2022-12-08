@@ -1,14 +1,13 @@
-import { default as fs } from "fs";
-import { default as readline } from "readline";
+import {readFileLines} from "../../common/readfileLines.js"
 import { HandShape } from "./handShape.js";
 import { HandShapeFactory } from "./handShapeFactory.js";
 import { RoundResult } from "./RoundResult.js";
 import { RoundResultFactory } from "./RoundResultFactory.js";
 
 export async function rockPaperScissorsScoreCounter(
-  file: String = "input.txt"
+  file: string = "input.txt"
 ): Promise<number> {
-  const rl = readFileByLine(file);
+  const rl = readFileLines(__dirname, file);
 
   let score = 0;
 
@@ -31,9 +30,9 @@ export async function rockPaperScissorsScoreCounter(
 
 //Second Method of the part2 of this problem
 export async function rockPaperScissorsScoreCounter2(
-  file: String = "input.txt"
+  file: string = "input.txt"
 ): Promise<number> {
-  const rl = readFileByLine(file);
+  const rl = readFileLines(__dirname, file);
 
   let score = 0;
 
@@ -54,15 +53,4 @@ export async function rockPaperScissorsScoreCounter2(
 
   console.log(score);
   return score;
-}
-function readFileByLine(file: String): readline.Interface {
-  const fileStream = fs.createReadStream("src/2022/2/" + file, {
-    encoding: "utf8",
-  });
-
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
-  });
-  return rl;
 }

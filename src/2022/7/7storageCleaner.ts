@@ -1,12 +1,11 @@
-import { default as fs } from "fs";
-import { default as readline } from "readline";
+import {readFileLines} from "../../common/readfileLines.js"
 import { Terminal } from "./terminal.js";
 
 export async function foldersBelowThresholdTotalSize(
   threshold: number,
-  file: String = "input.txt"
+  file: string = "input.txt"
 ): Promise<number> {
-  const rl = readFileByLine(file);
+  const rl = readFileLines(__dirname, file);
 
   const terminal = new Terminal();
 
@@ -22,9 +21,9 @@ export async function foldersBelowThresholdTotalSize(
 export async function folderToDeleteToAchieveSpace(
   fileSystemSpace: number,
   neccesarySpace: number,
-  file: String = "input.txt"
+  file: string = "input.txt"
 ): Promise<number> {
-  const rl = readFileByLine(file);
+  const rl = readFileLines(__dirname, file);
 
   const terminal = new Terminal();
   terminal.fileExplorer.totalSpace = fileSystemSpace;
@@ -36,16 +35,4 @@ export async function folderToDeleteToAchieveSpace(
   const folderToDelete =
     terminal.fileExplorer.folderToAchieveSpace(neccesarySpace);
   return folderToDelete.size;
-}
-
-function readFileByLine(file: String): readline.Interface {
-  const fileStream = fs.createReadStream("src/2022/7/" + file, {
-    encoding: "utf8",
-  });
-
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
-  });
-  return rl;
 }

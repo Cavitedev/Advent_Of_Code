@@ -1,11 +1,10 @@
-import { default as fs } from "fs";
-import { default as readline } from "readline";
+import { readFileLines } from "../../common/readfileLines.js";
 import { Forest } from "./Forest.js";
 
 export async function treeHouseCounter(
-  file: String = "input.txt"
+  file: string = "input.txt"
 ): Promise<number> {
-  const rl = readFileByLine(file);
+  const rl = readFileLines(__dirname, file);
 
   const forest = new Forest();
   for await (const line of rl) {
@@ -17,9 +16,9 @@ export async function treeHouseCounter(
 }
 
 export async function bestScenicValueInForest(
-  file: String = "input.txt"
+  file: string = "input.txt"
 ): Promise<number> {
-  const rl = readFileByLine(file);
+  const rl = readFileLines(__dirname, file);
 
   const forest = new Forest();
   for await (const line of rl) {
@@ -29,16 +28,4 @@ export async function bestScenicValueInForest(
   forest.checkAmountOfVisibleTreesOnEachDirection();
   const bestScenicValue = forest.bestScenicValue();
   return bestScenicValue;
-}
-
-function readFileByLine(file: String): readline.Interface {
-  const fileStream = fs.createReadStream("src/2022/8/" + file, {
-    encoding: "utf8",
-  });
-
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
-  });
-  return rl;
 }

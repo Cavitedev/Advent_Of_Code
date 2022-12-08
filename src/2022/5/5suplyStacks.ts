@@ -1,12 +1,11 @@
-import { default as fs } from "fs";
-import { default as readline } from "readline";
+import {readFileLines} from "../../common/readfileLines.js"
 import { CrateMover9000, CrateMover9001 } from "./crateMover.js";
 
 export async function stacksCraneSimulation(
   model: number = 9000,
-  file: String = "input.txt"
+  file: string = "input.txt"
 ): Promise<string> {
-  const rl = readFileByLine(file);
+  const rl = readFileLines(__dirname, file);
 
   let initialState = "";
   let suplyStacks: CrateMover9000 = null;
@@ -28,16 +27,4 @@ export async function stacksCraneSimulation(
   const output = suplyStacks.topOnStacks();
   console.log(output);
   return output;
-}
-
-function readFileByLine(file: String): readline.Interface {
-  const fileStream = fs.createReadStream("src/2022/5/" + file, {
-    encoding: "utf8",
-  });
-
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
-  });
-  return rl;
 }

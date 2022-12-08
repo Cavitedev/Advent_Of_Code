@@ -1,12 +1,11 @@
-import { default as fs } from "fs";
-import { default as readline } from "readline";
+import {readFileLines} from "../../common/readfileLines.js"
 import { ElvesCleaningSections } from "./elvesCleaningSections.js";
 
 export async function amountOfElvesOnCleanOverlap(
   fullOverlap: boolean,
-  file: String = "input.txt"
+  file: string = "input.txt"
 ): Promise<number> {
-  const rl = readFileByLine(file);
+  const rl = readFileLines(__dirname, file);
 
   let overlapCount = 0;
 
@@ -21,16 +20,4 @@ export async function amountOfElvesOnCleanOverlap(
 
   console.log(overlapCount);
   return overlapCount;
-}
-
-function readFileByLine(file: String): readline.Interface {
-  const fileStream = fs.createReadStream("src/2022/4/" + file, {
-    encoding: "utf8",
-  });
-
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
-  });
-  return rl;
 }
