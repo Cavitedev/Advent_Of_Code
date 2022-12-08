@@ -12,7 +12,8 @@
     "build": "tsc",
     "run": "tsc && node dist/index.js",
     "start": "npm run run",
-    "test": "jest"
+    "test": "jest",
+    "test:2022": "jest src/2022"
   },
   "author": "Cavitedev",
   "license": "ISC",
