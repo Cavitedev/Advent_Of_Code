@@ -34,28 +34,18 @@ export class Bridge {
     const dir: Direction = Direction.FromLetter(dirLetter);
     const moveCoordinate = dir.moveCoordinate;
     for (let index = 0; index < amount; index++) {
-      let prevHead = this.head;
       this._head = this.head.sumPos(moveCoordinate);
       let curHead = this._head;
-      let lastMove: Coordinate = moveCoordinate;
       this.knots.forEach(function (knot, index, knots) {
         if (!curHead.isAdyacent(knot)) {
-          if (lastMove.isDiagonal()) {
-            knots[index] = knots[index].sumPos(lastMove);
-          } else {
-            knots[index] = prevHead;
-          }
+          const movement = knots[index].bestMovementToReach(curHead);
+          knots[index] = knots[index].sumPos(movement);
         }
-        lastMove = knots[index].subPos(knot);
-        prevHead = knot;
         curHead = knots[index];
       });
       if (!curHead.isAdyacent(this.tail)) {
-        if (lastMove.isDiagonal()) {
-          this.tail = this.tail.sumPos(lastMove);
-        } else {
-          this.tail = prevHead;
-        }
+        const movement = this.tail.bestMovementToReach(curHead);
+        this.tail = this.tail.sumPos(movement);
       }
     }
   }

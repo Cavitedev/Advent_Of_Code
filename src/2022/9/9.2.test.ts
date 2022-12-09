@@ -81,19 +81,19 @@ describe("9.2", () => {
 .1H3..
 .5....
 6.....`;
-    const result: Bridge = await bridgeSimulation(9, "test.txt");
+    const result: Bridge = await bridgeSimulation(8, "test.txt");
     expect(result.unrepeatedCellsTraversed().length).toEqual(1);
     expect(result.displayMovements(6, 5, 0, 0)).toEqual(expected);
   });
 
   it("Works with second test input", async () => {
-    const result = await traversedCellsCounter(9, "test2.txt");
+    const result = await traversedCellsCounter(8, "test2.txt");
     expect(result).toEqual(36);
   });
 
   it("Works with actual input", async () => {
-    const result = await traversedCellsCounter(9, "input.txt");
+    const result = await traversedCellsCounter(8, "input.txt");
     //Higher
-    expect(result).toEqual(2251);
+    expect(result).toEqual(2493);
   });
 });
