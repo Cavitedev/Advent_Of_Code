@@ -1,26 +1,46 @@
+import { Direction } from "./direction.js";
+
 export class Bridge {
-  public cellsTraversed: Set<Coordinate>;
-  public _head: Coordinate;
-  public tail: Coordinate;
+  public cellsTraversed: Coordinate[];
+  private _tail: Coordinate;
+  private _head: Coordinate;
 
   constructor() {
-    this.cellsTraversed = new Set<Coordinate>();
-    this._head = new Coordinate(0, 0);
+    this.cellsTraversed = [];
     this.tail = new Coordinate(0, 0);
-    this.cellsTraversed.add(this._head);
+    this._head = new Coordinate(0, 0);
+  }
+
+  public get tail(): Coordinate {
+    return this._tail;
   }
 
   public get head(): Coordinate {
     return this._head;
   }
 
-  public set head(coordinate: Coordinate) {
-    this._head = coordinate;
-    this.cellsTraversed.add(coordinate);
+  public set tail(coordinate: Coordinate) {
+    this._tail = coordinate;
+    this.cellsTraversed.push(coordinate);
   }
 
-  public moveTail(dir: string) {
-    
+  public moveTail(dirLetter: string, amount: number) {
+    const dir: Direction = Direction.FromLetter(dirLetter);
+    const moveCoordinate = dir.moveCoordinate;
+    for (let index = 0; index < amount; index++) {
+      const prevHeadPos = this._head;
+      this._head = this.head.sumPos(moveCoordinate);
+      if (!this._head.isAdyacent(this.tail)) {
+        this.tail = prevHeadPos;
+      }
+    }
+  }
+
+  //Thanks to https://stackoverflow.com/a/56757215/14559140
+  public unrepeatedCellsTraversed(): Coordinate[] {
+    return this.cellsTraversed.filter(
+      (v, i, a) => a.findIndex((v2) => v2.isEqual(v)) === i
+    );
   }
 }
 
@@ -31,5 +51,24 @@ export class Coordinate {
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
+  }
+
+  public sumPos(other: Coordinate) {
+    return new Coordinate(this.x + other.x, this.y + other.y);
+  }
+  public subPos(other: Coordinate) {
+    return new Coordinate(this.x - other.x, this.y - other.y);
+  }
+
+  public isAdyacent(other: Coordinate): boolean {
+    const dif = this.subPos(other);
+    const x = Math.abs(dif.x);
+    const y = Math.abs(dif.y);
+    const isAdyacent = x <= 1 && y <= 1;
+    return isAdyacent;
+  }
+
+  public isEqual(other: Coordinate): boolean {
+    return other.x === this.x && other.y === this.y;
   }
 }
