@@ -1,5 +1,5 @@
 import { readFileLines } from "../../common/readfileLines.js";
-import { Forest } from "./Forest.js";
+import { Forest } from "./forest.js";
 
 export async function bestScenicValueInForest(
   file: string = "input.txt"

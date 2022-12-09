@@ -1,5 +1,5 @@
-import { Tree } from "./Tree.js";
-import { West, North, East, South, Direction } from "./Direction.js";
+import { Tree } from "./tree.js";
+import { West, North, East, South, Direction } from "./direction.js";
 
 export class Forest {
   public trees: Tree[][];

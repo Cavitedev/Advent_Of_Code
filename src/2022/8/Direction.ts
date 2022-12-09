@@ -1,4 +1,4 @@
-import { Tree, VisibilityDirection } from "./Tree.js";
+import { Tree, VisibilityDirection } from "./tree.js";
 
 export abstract class Direction {
   public static Directions(): Direction[] {

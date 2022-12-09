@@ -1,6 +1,6 @@
-import { Tree, VisibilityDirection } from "./Tree.js";
-import { West, North, East, South } from "./Direction.js";
-import { Forest } from "./Forest.js";
+import { Tree, VisibilityDirection } from "./tree.js";
+import { West, North, East, South } from "./direction.js";
+import { Forest } from "./forest.js";
 import { bestScenicValueInForest } from "./8.2.js";
 
 describe("8.2", () => {
