@@ -1,4 +1,4 @@
-import { traversedCellsCounter } from "./9.1.js";
+import { traversedCellsCounter } from "./9.js";
 import { Bridge, Coordinate } from "./bridge.js";
 
 describe("9.1", () => {
