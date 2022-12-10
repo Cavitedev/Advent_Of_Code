@@ -86,12 +86,12 @@ describe("9.2", () => {
     expect(result.displayMovements(6, 5, 0, 0)).toEqual(expected);
   });
 
-  it("Works with second test input", async () => {
+  it("Test with test2.txt", async () => {
     const result = await traversedCellsCounter(8, "test2.txt");
     expect(result).toEqual(36);
   });
 
-  it("Works with actual input", async () => {
+  it("Test with input.txt", async () => {
     const result = await traversedCellsCounter(8, "input.txt");
     //Higher
     expect(result).toEqual(2493);

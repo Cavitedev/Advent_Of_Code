@@ -62,12 +62,12 @@ describe("9.1", () => {
       new Coordinate(2, 0),
     ]);
   });
-  it("Works with test input", async () => {
+  it("Test with test.txt", async () => {
     const result = await traversedCellsCounter(0, "test.txt");
     expect(result).toEqual(13);
   });
 
-  it("Works with actual input", async () => {
+  it("Test with input.txt", async () => {
     const result = await traversedCellsCounter(0, "input.txt");
     expect(result).toEqual(6087);
   });

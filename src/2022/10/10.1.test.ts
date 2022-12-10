@@ -1,4 +1,4 @@
-import { getSignalStrength } from "./10.js";
+import { getSignalStrength } from "./10.1.js";
 import { SingalReader } from "./singalReader.js";
 
 describe("10.1", () => {
@@ -15,6 +15,7 @@ describe("10.1", () => {
 
     expect(reader.xRegister).toEqual(1);
     expect(reader.xRegisterValues).toEqual([1, 1]);
+    expect(reader.cycleCount).toEqual(2);
   });
 
   it("Read addx updates x after 2 cycles", () => {
@@ -30,12 +31,12 @@ describe("10.1", () => {
     expect(reader.sumOfStrength()).toEqual(0);
   });
 
-  it("Works with test text", async () => {
+  it("Test with test.txt", async () => {
     const result = await getSignalStrength("test.txt");
     expect(result).toEqual(13140);
   });
 
-  it("Works with input text", async () => {
+  it("Test with input.txt", async () => {
     const result = await getSignalStrength("input.txt");
     expect(result).toEqual(17940);
   });
