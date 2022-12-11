@@ -1,3 +1,5 @@
+import { Utils } from "../../common/Utils.js";
+
 export class MonkeysAnalyzer {
   public monkeys: Monkey[];
   private _currentMonkey: number;
@@ -97,7 +99,9 @@ export class MonkeysAnalyzer {
     const value = +valueStr;
 
     monkey.throwCondition = (item: number) => item % value === 0;
-    this.modulusToApply *= value;
+    // this.modulusToApply *= value;
+    // Decrease values even further
+    this.modulusToApply = Utils.leastCommonMultiple(this.modulusToApply, value);
   }
 
   private _addMonkeyToThrowIfTrue(values: string, monkey: Monkey) {
