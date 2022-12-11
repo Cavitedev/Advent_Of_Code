@@ -1,3 +1,4 @@
+import { getMonkeyBusiness } from "./11.1.js";
 import { MonkeysAnalyzer } from "./monkey.js";
 
 describe("11.1", () => {
@@ -149,5 +150,15 @@ describe("11.1", () => {
       const expected = [101, 95, 7, 105];
       expect(inspections).toEqual(expected);
     });
+  });
+
+  it("test with test.txt", async () => {
+    const businessValue = await getMonkeyBusiness(20, 2, "test.txt");
+    expect(businessValue).toEqual(10605);
+  });
+
+  it("test with input.txt", async () => {
+    const businessValue = await getMonkeyBusiness(20, 2, "input.txt");
+    expect(businessValue).toEqual(61503);
   });
 });
