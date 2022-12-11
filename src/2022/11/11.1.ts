@@ -4,11 +4,12 @@ import { MonkeysAnalyzer } from "./monkey.js";
 export async function getMonkeyBusiness(
   rounds: number,
   monkeysToReturn: number,
+  decreasesWorrinessAfterInspection: boolean,
   file: string
 ): Promise<number> {
   const rl = readFileLines(__dirname, file);
 
-  const monkeysAnalyzer = new MonkeysAnalyzer();
+  const monkeysAnalyzer = new MonkeysAnalyzer(decreasesWorrinessAfterInspection);
 
   for await (const line of rl) {
     monkeysAnalyzer.readLine(line);

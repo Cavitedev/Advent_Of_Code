@@ -3,19 +3,19 @@ import { MonkeysAnalyzer } from "./monkey.js";
 
 describe("11.1", () => {
   it("Monkeys add monkeys adds an empty monkey", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.addMonkey();
 
     expect(monkeys.monkeys.length).toEqual(1);
   });
 
   it("If there are no monkeys, current monkey returns null", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     expect(monkeys.currentMonkey()).toBeNull();
   });
 
   it("If there is only 1 monkey, changing current monkey moves again to first monkey", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.addMonkey();
     const monkey1 = monkeys.monkeys[0];
 
@@ -27,7 +27,7 @@ describe("11.1", () => {
   });
 
   it("If there are only 2 monkeys, current monkey is the second monkey", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.addMonkey();
     monkeys.addMonkey();
 
@@ -36,48 +36,48 @@ describe("11.1", () => {
   });
 
   it("Read monkey line, adds new monkey", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.readLine("Monkey 0:");
     expect(monkeys.monkeys.length).toEqual(1);
   });
 
   it("Read monkey line and starting items add items to monkey", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.readLine("Monkey 0:");
     monkeys.readLine("  Starting items: 65, 58, 93, 57, 66");
     expect(monkeys.currentMonkey().items).toEqual([65, 58, 93, 57, 66]);
   });
 
   it("Read monkey line and sum operation with value includes operation correctly", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.readLine("Monkey 0:");
     monkeys.readLine("  Operation: new = old + 4");
     expect(monkeys.currentMonkey().operation(5)).toEqual(9);
   });
 
   it("Read monkey line and sum operation with old includes operation correctly", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.readLine("Monkey 0:");
     monkeys.readLine("  Operation: new = old + old");
     expect(monkeys.currentMonkey().operation(5)).toEqual(10);
   });
 
   it("Read monkey line and multiplication operation with value includes operation correctly", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.readLine("Monkey 0:");
     monkeys.readLine("  Operation: new = old * 4");
     expect(monkeys.currentMonkey().operation(5)).toEqual(20);
   });
 
   it("Read monkey line and multiplication operation with old includes operation correctly", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.readLine("Monkey 0:");
     monkeys.readLine("  Operation: new = old * old");
     expect(monkeys.currentMonkey().operation(5)).toEqual(25);
   });
 
   it("Read monkey line and throw condition includes operation correctly", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.readLine("Monkey 0:");
     monkeys.readLine("  Test: divisible by 3");
     expect(monkeys.currentMonkey().throwCondition(2)).toEqual(false);
@@ -85,7 +85,7 @@ describe("11.1", () => {
   });
 
   it("Read monkey line and monkey to throw if true and if false are added correctly", () => {
-    const monkeys = new MonkeysAnalyzer();
+    const monkeys = new MonkeysAnalyzer(true);
     monkeys.readLine("Monkey 0:");
     monkeys.readLine("  Test: divisible by 3");
     monkeys.readLine("    If true: throw to monkey 7");
@@ -125,7 +125,7 @@ describe("11.1", () => {
           If true: throw to monkey 0
           If false: throw to monkey 1`;
 
-      monkeys = new MonkeysAnalyzer();
+      monkeys = new MonkeysAnalyzer(true);
       for (const line of input.split("\n")) {
         monkeys.readLine(line);
       }
@@ -153,12 +153,12 @@ describe("11.1", () => {
   });
 
   it("test with test.txt", async () => {
-    const businessValue = await getMonkeyBusiness(20, 2, "test.txt");
+    const businessValue = await getMonkeyBusiness(20, 2, true, "test.txt");
     expect(businessValue).toEqual(10605);
   });
 
   it("test with input.txt", async () => {
-    const businessValue = await getMonkeyBusiness(20, 2, "input.txt");
+    const businessValue = await getMonkeyBusiness(20, 2, true, "input.txt");
     expect(businessValue).toEqual(61503);
   });
 });

@@ -1,14 +1,18 @@
 export class MonkeysAnalyzer {
   public monkeys: Monkey[];
   private _currentMonkey: number;
+  public decreasesWorrinessAfterInspection: boolean;
+  public modulusToApply: number;
 
-  constructor() {
+  constructor(decreasesWorrinessAfterInspection: boolean) {
     this.monkeys = [];
     this._currentMonkey = -1;
+    this.modulusToApply = 1;
+    this.decreasesWorrinessAfterInspection = decreasesWorrinessAfterInspection;
   }
 
   public addMonkey() {
-    this.monkeys.push(new Monkey());
+    this.monkeys.push(new Monkey(this.decreasesWorrinessAfterInspection));
     this.nextMonkey();
   }
 
@@ -93,6 +97,7 @@ export class MonkeysAnalyzer {
     const value = +valueStr;
 
     monkey.throwCondition = (item: number) => item % value === 0;
+    this.modulusToApply *= value;
   }
 
   private _addMonkeyToThrowIfTrue(values: string, monkey: Monkey) {
@@ -114,7 +119,7 @@ export class MonkeysAnalyzer {
   public performRoundActions(rounds: number) {
     for (let i = 0; i < rounds; i++) {
       for (const monkey of this.monkeys) {
-        monkey.throwItems(this.monkeys);
+        monkey.throwItems(this.monkeys, this.modulusToApply);
       }
     }
   }
@@ -131,17 +136,19 @@ export class Monkey {
   public ifTrueMonkeyIndex: number;
   public ifFalseMonkeyIndex: number;
   public inspectionCount: number;
+  public decreasesWorrinessAfterInspection: boolean;
 
-  constructor() {
+  constructor(decreasesWorrinessAfterInspection: boolean) {
     this.items = [];
     this.inspectionCount = 0;
+    this.decreasesWorrinessAfterInspection = decreasesWorrinessAfterInspection;
   }
 
   public receiveItem(item: number) {
     this.items.push(item);
   }
 
-  public throwItems(allMonkeys: Monkey[]) {
+  public throwItems(allMonkeys: Monkey[], modulusToApply: number) {
     for (let i = 0; i < this.items.length; i++) {
       //Inspect
       let item = this.items[i];
@@ -149,9 +156,13 @@ export class Monkey {
       //Multiply worry level
       item = this.operation(item);
       //Gets bored
-      item = Math.floor(item / 3);
+      if (this.decreasesWorrinessAfterInspection) {
+        item = Math.floor(item / 3);
+      }
+      item %= modulusToApply;
       //Check throw condition
       const conditionTrue = this.throwCondition(item);
+
       //Throw
       const monkeyIndex = conditionTrue
         ? this.ifTrueMonkeyIndex
