@@ -45,8 +45,9 @@ export class SingalReader {
 
   private _readAddx(parameter: number) {
     this._addCycle();
+    this._drawPixel(this.cycleCount - 1);
     this._xRegister += parameter;
-    this._addCycle();
+    this.xRegisterValues.push(this._xRegister);
   }
 
   private _addCycle() {
