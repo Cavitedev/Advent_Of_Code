@@ -99,6 +99,10 @@ export class HeightMap {
     return this.cells.flat().find((cell) => cell.isEnd === true);
   }
 
+  public getCellsAtHeight(height: number): HeightMapCell[] {
+    return this.cells.flat().filter((cell) => cell.height === height);
+  }
+
   public getValidAdyacentCellsFrom(cell: HeightMapCell): HeightMapCell[] {
     const adyacentCells = this._getAdyacentCells(cell);
     return adyacentCells.filter((adyCell) => {
