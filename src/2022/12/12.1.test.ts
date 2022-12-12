@@ -1,3 +1,4 @@
+import { bestPathLengthToGoal } from "./12.1.js";
 import { HeightMap, HeightMapCell } from "./heightMap.js";
 
 describe("12.1", () => {
@@ -57,6 +58,13 @@ describe("12.1", () => {
       expect(startCell.j).toEqual(0);
     });
 
+    it("End cell is found correctly", () => {
+      const endCell = heightMap.getEndCell();
+      expect(endCell.isEnd).toEqual(true);
+      expect(endCell.i).toEqual(2);
+      expect(endCell.j).toEqual(5);
+    });
+
     it("Get adyacent valid cells at (0,0) returns cell at (1,0) and (0,1)", () => {
       const cell0_0 = heightMap.cells[0][0];
       const cell0_1 = heightMap.cells[0][1];
@@ -66,6 +74,24 @@ describe("12.1", () => {
       expect(adyacentCells).toEqual([cell1_0, cell0_1]);
     });
 
+    it("Path length is 31 on this example using backtracking", () => {
+      const path = heightMap.findPathBacktracking();
+      expect(path.length - 1).toEqual(31);
+    });
 
+    it("Path length is 31 on this example using A*", () => {
+      const path = heightMap.findPathAStarFromStart();
+      expect(path.length - 1).toEqual(31);
+    });
+  });
+
+  it("Test with test.txt", async () => {
+    const steps = await bestPathLengthToGoal("test.txt");
+    expect(steps).toEqual(31);
+  });
+
+  it("Test with input.txt", async () => {
+    const steps = await bestPathLengthToGoal("input.txt");
+    expect(steps).toEqual(31);
   });
 });

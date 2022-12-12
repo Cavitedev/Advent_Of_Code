@@ -1,3 +1,5 @@
+import { HeightMapCellNode, HeightMapSearch } from "./heightMapSearch.js";
+
 export class HeightMap {
   public cells: HeightMapCell[][];
 
@@ -18,14 +20,83 @@ export class HeightMap {
     this.cells.push(cellsRow);
   }
 
-  public findPath(): HeightMapCell[] {
+  public findPathBacktracking(): HeightMapCell[] {
     const path: HeightMapCell[] = [];
+    const startCell = this.getStartCell();
+    path.push(startCell);
+    // -1 untested, 0 left, 1 up, 2 right, 3 down, 4 backtracking
+    const dirsTried: number[] = [-1];
+    let bestSol = 100;
+    let bestPath: HeightMapCell[] = [];
 
-    return path;
+    while (path.length > 0) {
+      const index = path.length - 1;
+      dirsTried[index] += 1;
+      const dirTried = dirsTried[index];
+      if (dirTried === 4) {
+        path.pop();
+        dirsTried.pop();
+        continue;
+      }
+
+      const currentCell = path[index];
+      const validAdyacentCells = this.getValidAdyacentCellsFrom(currentCell);
+
+      let i = currentCell.i;
+      let j = currentCell.j;
+      if (dirTried === 0) {
+        j -= 1;
+      } else if (dirTried === 1) {
+        i -= 1;
+      } else if (dirTried === 2) {
+        j += 1;
+      } else if (dirTried === 3) {
+        i += 1;
+      }
+
+      const nextCell = validAdyacentCells.find(
+        (cell) => cell.i === i && cell.j === j
+      );
+
+      if (path.includes(nextCell)) {
+        continue;
+      }
+
+      if (nextCell) {
+        path.push(nextCell);
+
+        if (nextCell.isEnd) {
+          bestPath = [...path];
+          bestSol = bestPath.length;
+          path.pop();
+          continue;
+        }
+
+        if (path.length >= bestSol) {
+          path.pop();
+          continue;
+        }
+
+        dirsTried.push(-1);
+      }
+    }
+
+    return bestPath;
+  }
+
+  public findPathAStarFromStart(): HeightMapCell[] {
+    const search = new HeightMapSearch(this);
+    const cells = search.findPathAStarFromStart();
+
+    return cells.map((cell) => cell.refCell);
   }
 
   public getStartCell(): HeightMapCell {
     return this.cells.flat().find((cell) => cell.isStart === true);
+  }
+
+  public getEndCell(): HeightMapCell {
+    return this.cells.flat().find((cell) => cell.isEnd === true);
   }
 
   public getValidAdyacentCellsFrom(cell: HeightMapCell): HeightMapCell[] {
