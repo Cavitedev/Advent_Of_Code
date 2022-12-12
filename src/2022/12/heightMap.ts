@@ -84,9 +84,9 @@ export class HeightMap {
     return bestPath;
   }
 
-  public findPathAStarFromStart(): HeightMapCell[] {
+  public findPathAStarFromStart(anyStartPosition: boolean): HeightMapCell[] {
     const search = new HeightMapSearch(this);
-    const cells = search.findPathAStarFromStart();
+    const cells = search.findPathAStarFromStart(anyStartPosition);
 
     return cells.map((cell) => cell.refCell);
   }
@@ -102,7 +102,7 @@ export class HeightMap {
   public getValidAdyacentCellsFrom(cell: HeightMapCell): HeightMapCell[] {
     const adyacentCells = this._getAdyacentCells(cell);
     return adyacentCells.filter((adyCell) => {
-      const difHeight = Math.abs(adyCell.height - cell.height);
+      const difHeight = adyCell.height - cell.height;
       return difHeight <= 1;
     });
   }
@@ -155,7 +155,7 @@ export class HeightMapCell {
     }
 
     if (char === "E") {
-      const cell = new HeightMapCell(27);
+      const cell = new HeightMapCell(26);
       cell.isEnd = true;
       return cell;
     }

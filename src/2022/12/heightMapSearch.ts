@@ -10,42 +10,62 @@ export class HeightMapSearch {
     this.heightMap = heightMap;
   }
 
-  public findPathAStarFromStart(): HeightMapCellNode[] {
+  public findPathAStarFromStart(
+    anyStartPosition: boolean
+  ): HeightMapCellNode[] {
     this._closed = new Set<HeightMapCell>();
-    this._open = new PriorityQueue((a, b) => a.fCost > b.fCost);
+    this._open = new PriorityQueue((a, b) => a.fCost <= b.fCost);
 
     const startCell = this.heightMap.getStartCell();
     const startNode = new HeightMapCellNode(startCell);
     startNode.gCost = 0;
     startNode.hCost = this._heuristicValueTowardsEnd(startNode);
     startNode.fCost = startNode.gCost + startNode.hCost;
-    this._closed.add(startCell);
     this._open.push(startNode);
 
     while (!this._open.isEmpty()) {
       const node = this._open.pop();
+
+      if (node.isEnd) {
+        return node.pathToReachNode();
+      }
+
       if (!this._closed.has(node.refCell)) {
-        this._closed.add(node.refCell)
-        
+        this._closed.add(node.refCell);
 
+        const successors = this._getSuccessors(node);
 
+        for (const successor of successors) {
+          if (anyStartPosition && successor.height === 1) {
+            successor.parent = null;
+            successor.gCost = 0;
+            successor.fCost = successor.gCost + successor.hCost;
+          }
+          this._open.push(successor);
+        }
       }
     }
 
     return [];
   }
 
-  private _findPathAStarFromCellToStart(
-    cell: HeightMapCellNode,
-    traversedCells: Set<HeightMapCellNode>
-  ) {}
-
   private _heuristicValueTowardsEnd(cell: HeightMapCellNode) {
-    return 24 - cell.height;
+    return 26 - cell.height;
   }
 
-  private _getSuccessor(node: HeightMapCellNode): HeightMapCellNode[]{
-    return [];
+  private _getSuccessors(parentNode: HeightMapCellNode): HeightMapCellNode[] {
+    const refCellSuccessors = this.heightMap.getValidAdyacentCellsFrom(
+      parentNode.refCell
+    );
+    const nodeSuccessors = refCellSuccessors.map((cell) => {
+      const node = new HeightMapCellNode(cell);
+      node.gCost = parentNode.gCost + 1;
+      node.hCost = this._heuristicValueTowardsEnd(node);
+      node.fCost = node.gCost + node.hCost;
+      node.parent = parentNode;
+      return node;
+    });
+    return nodeSuccessors;
   }
 }
 
@@ -79,5 +99,16 @@ export class HeightMapCellNode {
 
   public get isEnd(): boolean {
     return this.refCell.isEnd;
+  }
+
+  public pathToReachNode(): HeightMapCellNode[] {
+    const path = [];
+    let node: HeightMapCellNode = this;
+    while (node.parent != null) {
+      path.unshift(node);
+      node = node.parent;
+    }
+    path.unshift(node);
+    return path;
   }
 }

@@ -1,5 +1,6 @@
-import { bestPathLengthToGoal } from "./12.1.js";
+import { bestPathLengthToGoal } from "./12.js";
 import { HeightMap, HeightMapCell } from "./heightMap.js";
+import { HeightMapCellNode } from "./heightMapSearch.js";
 
 describe("12.1", () => {
   it("HeightMapCell S is at height 1 and it is the start cell", () => {
@@ -12,7 +13,7 @@ describe("12.1", () => {
 
   it("HeightMapCell E is at height 27 and it is the end cell", () => {
     const cell = HeightMapCell.FromChar("E");
-    expect(cell.height).toEqual(27);
+    expect(cell.height).toEqual(26);
     expect(cell.isStart).toEqual(false);
     expect(cell.isEnd).toEqual(true);
   });
@@ -80,18 +81,36 @@ describe("12.1", () => {
     });
 
     it("Path length is 31 on this example using A*", () => {
-      const path = heightMap.findPathAStarFromStart();
+      const path = heightMap.findPathAStarFromStart(false);
       expect(path.length - 1).toEqual(31);
     });
   });
 
+  describe("A* search", () => {
+    it("Linking three nodes as a parent and asking route on last node, returns path from first parent to the last child", () => {
+      const cell1 = new HeightMapCell(1);
+      const cell2 = new HeightMapCell(2);
+      const cell3 = new HeightMapCell(3);
+
+      const node1 = new HeightMapCellNode(cell1);
+      const node2 = new HeightMapCellNode(cell2);
+      const node3 = new HeightMapCellNode(cell3);
+
+      node3.parent = node2;
+      node2.parent = node1;
+
+      const pathTo3 = node3.pathToReachNode();
+      expect(pathTo3).toEqual([node1, node2, node3]);
+    });
+  });
+
   it("Test with test.txt", async () => {
-    const steps = await bestPathLengthToGoal("test.txt");
+    const steps = await bestPathLengthToGoal(false, "test.txt");
     expect(steps).toEqual(31);
   });
 
   it("Test with input.txt", async () => {
-    const steps = await bestPathLengthToGoal("input.txt");
-    expect(steps).toEqual(31);
+    const steps = await bestPathLengthToGoal(false, "input.txt");
+    expect(steps).toEqual(383);
   });
 });
