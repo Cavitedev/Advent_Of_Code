@@ -149,6 +149,6 @@ describe("13.1", () => {
 
   it("Test with input.txt", async () => {
     const result = await getSumRightOrderPacketIndexes("input.txt");
-    expect(result).toEqual(13);
+    expect(result).toEqual(6101);
   });
 });

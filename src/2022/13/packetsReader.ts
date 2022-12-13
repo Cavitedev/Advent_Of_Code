@@ -30,6 +30,24 @@ export class PacketsReader {
   private _getCurrentPacketPair(): PacketGroup {
     return this.packetGroups[this.packetGroups.length - 1];
   }
+
+  public getDecoderKeyFromPackets(): number {
+    const allPackets = this.packetGroups
+      .map((packet) => packet.packetPairs)
+      .flat();
+
+    const dividerPacket1 = new Packet([new Packet([new IntValue(2)])]);
+    const dividerPacket2 = new Packet([new Packet([new IntValue(6)])]);
+
+    allPackets.push(dividerPacket1);
+    allPackets.push(dividerPacket2);
+
+    const orderedPackets = allPackets.sort((a, b) => a.compareWith(b));
+    const index1 = orderedPackets.indexOf(dividerPacket1) + 1;
+    const index2 = orderedPackets.indexOf(dividerPacket2) + 1;
+
+    return index1 * index2;
+  }
 }
 
 export class PacketGroup {
@@ -132,7 +150,7 @@ export class Packet implements IValue {
       otherPacket = otherValue as Packet;
     }
 
-    if(this.values.length === 0 && otherPacket.values.length === 0){
+    if (this.values.length === 0 && otherPacket.values.length === 0) {
       return 0;
     }
     if (this.values.length === 0) {
@@ -142,7 +160,11 @@ export class Packet implements IValue {
       return 1;
     }
 
-    for (let i = 0; i < Math.max(this.values.length, otherPacket.values.length); i++) {
+    for (
+      let i = 0;
+      i < Math.max(this.values.length, otherPacket.values.length);
+      i++
+    ) {
       if (this.values.length === i && otherPacket.values.length === i) {
         return 0;
       }
