@@ -1,3 +1,4 @@
+import { getSumRightOrderPacketIndexes } from "./13.1.js";
 import { Packet, IntValue, PacketsReader } from "./packetsReader.js";
 
 describe("13.1", () => {
@@ -94,5 +95,60 @@ describe("13.1", () => {
       const sum = packetsReader.sumRightOrderPacketsIndexes();
       expect(sum).toEqual(0);
     });
+
+    it("Same as fifth pair, but the other way (right packet pair)", () => {
+      const packetsReader = new PacketsReader();
+      packetsReader.readLine("[[7,7],[5,5]]");
+      packetsReader.readLine("[[7,7,7],[5,5]]");
+
+      const sum = packetsReader.sumRightOrderPacketsIndexes();
+      expect(sum).toEqual(1);
+    });
+
+    it("Same as fifth pair, but the other way (right packet pair)", () => {
+      const packetsReader = new PacketsReader();
+      packetsReader.readLine("[1]");
+      packetsReader.readLine("[1]");
+
+      const sum = packetsReader.sumRightOrderPacketsIndexes();
+      expect(sum).toEqual(0);
+    });
+
+    it("compare packets with the sixth pair returns 1 (right packet pair)", () => {
+      const packetsReader = new PacketsReader();
+      packetsReader.readLine("[]");
+      packetsReader.readLine("[3]");
+
+      const sum = packetsReader.sumRightOrderPacketsIndexes();
+      expect(sum).toEqual(1);
+    });
+
+    it("compare packets with the sixth pair returns 1 (right packet pair)", () => {
+      const packetsReader = new PacketsReader();
+      packetsReader.readLine("[[[]]]");
+      packetsReader.readLine("[[]]");
+
+      const sum = packetsReader.sumRightOrderPacketsIndexes();
+      expect(sum).toEqual(0);
+    });
+
+    it("compare packets with the sixth pair returns 1 (right packet pair)", () => {
+      const packetsReader = new PacketsReader();
+      packetsReader.readLine("[1,[2,[3,[4,[5,6,7]]]],8,9]");
+      packetsReader.readLine("[1,[2,[3,[4,[5,6,0]]]],8,9]");
+
+      const sum = packetsReader.sumRightOrderPacketsIndexes();
+      expect(sum).toEqual(0);
+    });
+  });
+
+  it("Test with test.txt", async () => {
+    const result = await getSumRightOrderPacketIndexes("test.txt");
+    expect(result).toEqual(13);
+  });
+
+  it("Test with input.txt", async () => {
+    const result = await getSumRightOrderPacketIndexes("input.txt");
+    expect(result).toEqual(13);
   });
 });

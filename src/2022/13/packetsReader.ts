@@ -44,8 +44,8 @@ export class PacketGroup {
 
     for (let i = 1; i < this.packetPairs.length; i++) {
       const rightValue = this.packetPairs[i];
-      const rightOrder = leftValue.isLeftFrom(rightValue);
-      if (!rightOrder) {
+      const rightOrder = leftValue.compareWith(rightValue);
+      if (rightOrder >= 0) {
         return false;
       }
       leftValue = rightValue;
@@ -58,7 +58,12 @@ export class PacketGroup {
 interface IValue {
   value: number;
 
-  isLeftFrom(otherPacket: IValue): boolean;
+  /**
+   *
+   * @param otherPacket
+   * @returns <0 if left, 0 if equal, > 0 if greater
+   */
+  compareWith(otherPacket: IValue): number;
 }
 
 export class IntValue implements IValue {
@@ -68,21 +73,13 @@ export class IntValue implements IValue {
     this.value = value;
   }
 
-  public isLeftFrom(otherValue: IValue): boolean {
+  public compareWith(otherValue: IValue): number {
     if (otherValue instanceof IntValue) {
-      return this.value <= otherValue.value;
+      return this.value - otherValue.value;
     } else if (otherValue instanceof Packet) {
       const otherPacket = otherValue as Packet;
-      if (otherPacket.values.length === 0) {
-        return false;
-      }
-      const packetFirstValue = otherPacket.values[0];
-      const isLeft = this.isLeftFrom(packetFirstValue);
-      if (!isLeft) {
-        return false;
-      } else {
-        return otherPacket.values.length === 1;
-      }
+      const thisAsPacket = new Packet([this]);
+      return thisAsPacket.compareWith(otherPacket);
     }
   }
 }
@@ -127,7 +124,7 @@ export class Packet implements IValue {
     return this.values.shift();
   }
 
-  public isLeftFrom(otherValue: IValue): boolean {
+  public compareWith(otherValue: IValue): number {
     let otherPacket: Packet;
     if (otherValue instanceof IntValue) {
       otherPacket = new Packet([otherValue]);
@@ -135,24 +132,34 @@ export class Packet implements IValue {
       otherPacket = otherValue as Packet;
     }
 
-    for (let i = 0; i < this.values.length; i++) {
+    if(this.values.length === 0 && otherPacket.values.length === 0){
+      return 0;
+    }
+    if (this.values.length === 0) {
+      return -1;
+    }
+    if (otherPacket.values.length === 0) {
+      return 1;
+    }
+
+    for (let i = 0; i < Math.max(this.values.length, otherPacket.values.length); i++) {
       if (this.values.length === i && otherPacket.values.length === i) {
-        return true;
+        return 0;
       }
       if (this.values.length === i) {
-        return true;
+        return -1;
       }
       if (otherPacket.values.length === i) {
-        return false;
+        return +1;
       }
       const leftValue = this.values[i];
       const rightValue = otherPacket.values[i];
-      const isLeft = leftValue.isLeftFrom(rightValue);
-      if (!isLeft) {
-        return false;
+      const comparison = leftValue.compareWith(rightValue);
+      if (comparison != 0) {
+        return comparison;
       }
     }
 
-    return true;
+    return 0;
   }
 }
