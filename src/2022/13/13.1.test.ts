@@ -39,15 +39,15 @@ describe("13.1", () => {
       packetsReader.readLine("[[1],[2,3,4]]");
 
       expect(packetsReader.packetGroups.length).toEqual(2);
-      expect(packetsReader.packetGroups[0].packetPair.length).toEqual(2);
-      expect(packetsReader.packetGroups[1].packetPair.length).toEqual(1);
+      expect(packetsReader.packetGroups[0].packetPairs.length).toEqual(2);
+      expect(packetsReader.packetGroups[1].packetPairs.length).toEqual(1);
 
       const expected = new Packet([
         new Packet([new IntValue(1)]),
         new Packet([new IntValue(2), new IntValue(3), new IntValue(4)]),
       ]);
 
-      expect(packetsReader.packetGroups[1].packetPair[0]).toEqual(expected);
+      expect(packetsReader.packetGroups[1].packetPairs[0]).toEqual(expected);
     });
 
     it("compare packets with the first pair returns 1 (right packet pair)", () => {
@@ -57,6 +57,42 @@ describe("13.1", () => {
 
       const sum = packetsReader.sumRightOrderPacketsIndexes();
       expect(sum).toEqual(1);
+    });
+
+    it("compare packets with the second pair returns 1 (right packet pair)", () => {
+      const packetsReader = new PacketsReader();
+      packetsReader.readLine("[[1],[2,3,4]]");
+      packetsReader.readLine("[[1],4]");
+
+      const sum = packetsReader.sumRightOrderPacketsIndexes();
+      expect(sum).toEqual(1);
+    });
+
+    it("compare packets with the third pair returns 0 (wrong packet pair)", () => {
+      const packetsReader = new PacketsReader();
+      packetsReader.readLine("[9]");
+      packetsReader.readLine("[[8,7,6]]");
+
+      const sum = packetsReader.sumRightOrderPacketsIndexes();
+      expect(sum).toEqual(0);
+    });
+
+    it("compare packets with the fourth pair returns 1 (right packet pair)", () => {
+      const packetsReader = new PacketsReader();
+      packetsReader.readLine("[[4,4],4,4]");
+      packetsReader.readLine("[[4,4],4,4,4]");
+
+      const sum = packetsReader.sumRightOrderPacketsIndexes();
+      expect(sum).toEqual(1);
+    });
+
+    it("compare packets with the fifth pair returns 0 (wrong packet pair)", () => {
+      const packetsReader = new PacketsReader();
+      packetsReader.readLine("[7,7,7,7]");
+      packetsReader.readLine("[7,7,7]");
+
+      const sum = packetsReader.sumRightOrderPacketsIndexes();
+      expect(sum).toEqual(0);
     });
   });
 });

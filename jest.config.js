@@ -6,5 +6,5 @@ export default {
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   moduleDirectories: ["node_modules", "src"],
-  "rootDir": "./",
+  "rootDir": "./src",
 };

@@ -12,7 +12,7 @@ export class PacketsReader {
     }
 
     const currentPacketPair = this._getCurrentPacketPair();
-    currentPacketPair.packetPair.push(Packet.FromLine(line));
+    currentPacketPair.packetPairs.push(Packet.FromLine(line));
   }
 
   public sumRightOrderPacketsIndexes() {
@@ -33,19 +33,32 @@ export class PacketsReader {
 }
 
 export class PacketGroup {
-  public packetPair: Packet[];
+  public packetPairs: Packet[];
 
   constructor() {
-    this.packetPair = [];
+    this.packetPairs = [];
   }
 
   public areRightOrder(): boolean {
+    let leftValue: IValue = this.packetPairs[0];
+
+    for (let i = 1; i < this.packetPairs.length; i++) {
+      const rightValue = this.packetPairs[i];
+      const rightOrder = leftValue.isLeftFrom(rightValue);
+      if (!rightOrder) {
+        return false;
+      }
+      leftValue = rightValue;
+    }
+
     return true;
   }
 }
 
 interface IValue {
   value: number;
+
+  isLeftFrom(otherPacket: IValue): boolean;
 }
 
 export class IntValue implements IValue {
@@ -53,6 +66,24 @@ export class IntValue implements IValue {
 
   constructor(value: number) {
     this.value = value;
+  }
+
+  public isLeftFrom(otherValue: IValue): boolean {
+    if (otherValue instanceof IntValue) {
+      return this.value <= otherValue.value;
+    } else if (otherValue instanceof Packet) {
+      const otherPacket = otherValue as Packet;
+      if (otherPacket.values.length === 0) {
+        return false;
+      }
+      const packetFirstValue = otherPacket.values[0];
+      const isLeft = this.isLeftFrom(packetFirstValue);
+      if (!isLeft) {
+        return false;
+      } else {
+        return otherPacket.values.length === 1;
+      }
+    }
   }
 }
 
@@ -94,5 +125,34 @@ export class Packet implements IValue {
 
   public shiftNextIValue(): IValue {
     return this.values.shift();
+  }
+
+  public isLeftFrom(otherValue: IValue): boolean {
+    let otherPacket: Packet;
+    if (otherValue instanceof IntValue) {
+      otherPacket = new Packet([otherValue]);
+    } else {
+      otherPacket = otherValue as Packet;
+    }
+
+    for (let i = 0; i < this.values.length; i++) {
+      if (this.values.length === i && otherPacket.values.length === i) {
+        return true;
+      }
+      if (this.values.length === i) {
+        return true;
+      }
+      if (otherPacket.values.length === i) {
+        return false;
+      }
+      const leftValue = this.values[i];
+      const rightValue = otherPacket.values[i];
+      const isLeft = leftValue.isLeftFrom(rightValue);
+      if (!isLeft) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
