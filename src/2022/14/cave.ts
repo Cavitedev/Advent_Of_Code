@@ -6,6 +6,9 @@ export class Cave {
   private _sandPoint = new Point(500, 0);
   private _minX: number;
   private _minY: number;
+  private _maxX: number;
+  private _maxY: number;
+  private _offset: number;
 
   constructor() {
     this.rockLines = [];
@@ -26,39 +29,41 @@ export class Cave {
     }
   }
 
-  public createGrid() {
+  public createGrid(offset: number = 0) {
+    this._offset = offset;
     const linePoints: Point[] = [
       ...this.rockLines.map((line) => [line.point1, line.point2]).flat(),
       this._sandPoint,
     ];
+
     this._minX = Math.min(...linePoints.map((point) => point.x));
     this._minY = Math.min(...linePoints.map((point) => point.y));
-    const maxX = Math.max(...linePoints.map((point) => point.x));
-    const maxY = Math.max(...linePoints.map((point) => point.y));
-    const xSize = maxX - this._minX + 1;
-    const ySize = maxY - this._minY + 1;
+    this._maxX = Math.max(...linePoints.map((point) => point.x));
+    this._maxY = Math.max(...linePoints.map((point) => point.y));
+    const xSize = this._maxX - this._minX + 1;
+    const ySize = this._maxY - this._minY + 1;
 
-    this.grid = Array(ySize)
-      .fill(Array(xSize).fill(undefined))
+    this.grid = Array(ySize + offset * 2)
+      .fill(Array(xSize + offset * 2).fill(undefined))
       .map((row) => row.map(() => "."));
 
     for (const rockLine of this.rockLines) {
       if (rockLine.point1.x === rockLine.point2.x) {
-        const x = rockLine.point1.x - this._minX;
+        const x = rockLine.point1.x - this._minX + offset;
         const startY =
-          Math.min(rockLine.point1.y, rockLine.point2.y) - this._minY;
+          Math.min(rockLine.point1.y, rockLine.point2.y) - this._minY + offset;
         const endY =
-          Math.max(rockLine.point1.y, rockLine.point2.y) - this._minY;
+          Math.max(rockLine.point1.y, rockLine.point2.y) - this._minY + offset;
 
         for (let y = startY; y <= endY; y++) {
           this.grid[y][x] = "#";
         }
       } else if (rockLine.point1.y === rockLine.point2.y) {
-        const y = rockLine.point1.y;
+        const y = rockLine.point1.y - this._minY + offset;
         const startX =
-          Math.min(rockLine.point1.x, rockLine.point2.x) - this._minX;
+          Math.min(rockLine.point1.x, rockLine.point2.x) - this._minX + offset;
         const endX =
-          Math.max(rockLine.point1.x, rockLine.point2.x) - this._minX;
+          Math.max(rockLine.point1.x, rockLine.point2.x) - this._minX + offset;
 
         for (let x = startX; x <= endX; x++) {
           this.grid[y][x] = "#";
@@ -66,8 +71,9 @@ export class Cave {
       }
     }
 
-    this.grid[this._sandPoint.y - this._minY][this._sandPoint.x - this._minX] =
-      "+";
+    this.grid[this._sandPoint.y - this._minY + offset][
+      this._sandPoint.x - this._minX + offset
+    ] = "+";
   }
 
   public fillWithSand(): number {
@@ -86,10 +92,39 @@ export class Cave {
     return sandAdded;
   }
 
+  public createGridV2() {
+
+    //Grow offset depending on the input
+    const offset = 200;
+    this.createGrid(offset);
+    const i = this._maxY + offset + 2;
+    for (let j = 0; j < this.grid[0].length; j++) {
+      this.grid[i][j] = "#";
+    }
+  }
+
+  public fillWithSandTillTop(): number {
+    let sandAdded = 0;
+
+    const _sandPointCopy = this._generateNewSandCell();
+
+    while (true) {
+      let sandCell = this._generateNewSandCell();
+
+      this._moveSandCell(sandCell);
+      sandAdded++;
+      if (sandCell.x === _sandPointCopy.x && sandCell.y === _sandPointCopy.y) {
+        return sandAdded;
+      }
+
+      this.grid[sandCell.y][sandCell.x] = "o";
+    }
+  }
+
   private _generateNewSandCell() {
     return new Point(
-      this._sandPoint.x - this._minX,
-      this._sandPoint.y - this._minY
+      this._sandPoint.x - this._minX + this._offset,
+      this._sandPoint.y - this._minY + this._offset
     );
   }
 
