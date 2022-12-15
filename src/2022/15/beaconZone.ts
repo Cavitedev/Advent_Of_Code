@@ -28,21 +28,21 @@ export class BeaconZone {
       const leftX = pairOfPoints[0];
       const rightX = pairOfPoints[1];
 
-      const trimmedXPairsOfPoints: number[][] = xPairsOfPoints.splice(0, i);
-      const leftPoints = trimmedXPairsOfPoints
-        .map((p) => p[0] + 1)
-        .filter((p) => p <= rightX);
-      const rightPoints = trimmedXPairsOfPoints
-        .map((p) => p[1] - 1)
-        .filter((p) => p >= leftX);
+      const trimmedXPairsOfPoints: number[][] = xPairsOfPoints
+        .slice(0, i)
+        .filter((p) => p[0] <= rightX || p[1] >= leftX);
 
-      const maxLeftX = Math.max(...leftPoints, leftX);
-      const minRightX = Math.min(...rightPoints, rightX);
-
-      let actualRightX = Math.min(rightX, minRightX);
-      let actualLeftX = Math.max(leftX, maxLeftX);
-
-      pointsCount += actualRightX - actualLeftX + 1;
+      for (let x = leftX; x <= rightX; x++) {
+        const existsPreviously = trimmedXPairsOfPoints.some((p) => {
+          return p[0] <= x && p[1] >= x;
+        });
+        const isSensorOrBeacon = this.sensorsBeacons.some((pp) =>
+          pp.usesXY(x, row)
+        );
+        if (!existsPreviously && !isSensorOrBeacon) {
+          pointsCount += 1;
+        }
+      }
     }
 
     return pointsCount;
@@ -88,6 +88,13 @@ export class SensorBeacon {
     const pointRight = new Point(this.sensor.x + xDif, row);
 
     return [pointLeft, pointRight];
+  }
+
+  public usesXY(x: number, y: number) {
+    return (
+      (this.beacon.x === x && this.beacon.y === y) ||
+      (this.sensor.x === x && this.sensor.y === y)
+    );
   }
 }
 

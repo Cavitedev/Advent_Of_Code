@@ -1,3 +1,4 @@
+import { checkedPointsInRow } from "./15.1.js";
 import { BeaconZone, Point, SensorBeacon } from "./beaconZone.js";
 
 describe("15.1", () => {
@@ -73,5 +74,17 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3`;
       const checkedPointsCount = beaconZone.checkedPointsCountAtRow(10);
       expect(checkedPointsCount).toEqual(26);
     });
+  });
+
+  it("Test with test.txt", async () =>{
+
+    const result = await checkedPointsInRow(10, "test.txt");
+    expect(result).toEqual(26);
+  });
+
+  it("Test with input.txt", async () =>{
+
+    const result = await checkedPointsInRow(2000000, "input.txt");
+    expect(result).toEqual(5878678);
   });
 });
