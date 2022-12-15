@@ -66,10 +66,7 @@ export class BeaconZone {
           continue;
         }
 
-        const strongestSensorBeacon: SensorBeacon =
-          this._strongestSensor(point);
-        const strongestSensor = strongestSensorBeacon.sensor;
-        const bestDistance = strongestSensorBeacon.exceededDistance(point);
+        const bestDistance = this._minExceededDistance(point);
         if (bestDistance >= 0) {
           return point;
         } else {
@@ -87,10 +84,7 @@ export class BeaconZone {
           continue;
         }
 
-        const strongestSensorBeacon: SensorBeacon =
-          this._strongestSensor(point);
-        const strongestSensor = strongestSensorBeacon.sensor;
-        const bestDistance = strongestSensorBeacon.exceededDistance(point);
+        const bestDistance = this._minExceededDistance(point);
         if (bestDistance >= 0) {
           return point;
         } else {
@@ -100,18 +94,10 @@ export class BeaconZone {
     }
   }
 
-  private _isInSensorBeaconsSignals(point: Point): boolean {
-    return this.sensorsBeacons.some((sb) => sb.isPointInCheckArea(point));
-  }
-
-
-  
-  private _strongestSensor(point: Point): SensorBeacon {
-    return this.sensorsBeacons.reduce((prev, curr) => {
-      return prev.exceededDistance(point) < curr.exceededDistance(point)
-        ? prev
-        : curr;
-    });
+  private _minExceededDistance(point: Point): number {
+    return Math.min(
+      ...this.sensorsBeacons.map((sb) => sb.exceededDistance(point))
+    );
   }
 }
 
