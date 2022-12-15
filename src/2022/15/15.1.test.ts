@@ -1,5 +1,6 @@
 import { checkedPointsInRow } from "./15.1.js";
-import { BeaconZone, Point, SensorBeacon } from "./beaconZone.js";
+import { BeaconZone, SensorBeacon } from "./beaconZone.js";
+import { Point } from "./cartesianMath.js";
 
 describe("15.1", () => {
   it("Read Sensor and beacon from string", () => {

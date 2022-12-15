@@ -1,3 +1,5 @@
+import { Point, Segment } from "./cartesianMath.js";
+
 export class BeaconZone {
   sensorsBeacons: SensorBeacon[];
 
@@ -34,7 +36,7 @@ export class BeaconZone {
 
       const orderedLeftXPoints = trimmedXPairsOfPoints
         .map((pp) => pp[0])
-        .sort((a, b) => a - b );
+        .sort((a, b) => a - b);
       for (let x = leftX; x <= rightX; ) {
         const overlappingPair = trimmedXPairsOfPoints.find((p) => {
           return p[0] <= x && p[1] >= x;
@@ -107,6 +109,46 @@ export class BeaconZone {
     }
   }
 
+  public getDistressSignalV2(start: number, end: number): Point {
+    const intPoints = this.interceptionPoints().filter((p) => {
+      return p.x >= start && p.x <= end && p.y >= start && p.y <= end;
+    });
+
+    for (const intPoint of intPoints) {
+      const dist = this._minExceededDistance(intPoint);
+      if (dist >= 0) {
+        return intPoint;
+      }
+    }
+
+    return null;
+  }
+
+  public interceptionPoints(): Point[] {
+    const intersectionPoints: Point[] = [];
+    const segments: Segment[][] = this.sensorsBeacons.map((sb) => sb.outline());
+
+    for (let i = 0; i < segments.length; i++) {
+      const outline = segments[i];
+      for (let j = 0; j < outline.length; j++) {
+        const segment = outline[j];
+
+        for (let i2 = i + 1; i2 < segments.length; i2++) {
+          const outline2 = segments[i2];
+          for (let j2 = 0; j2 < outline2.length; j2++) {
+            const segment2 = outline2[j2];
+            const interPoint = segment.intersectionPointAsSegment(segment2);
+            if (interPoint) {
+              intersectionPoints.push(interPoint);
+            }
+          }
+        }
+      }
+    }
+
+    return intersectionPoints;
+  }
+
   private _minExceededDistance(point: Point): number {
     return Math.min(
       ...this.sensorsBeacons.map((sb) => sb.exceededDistance(point))
@@ -153,6 +195,23 @@ export class SensorBeacon {
     return [pointLeft, pointRight];
   }
 
+  public outline(): Segment[] {
+    const segments: Segment[] = [];
+    const dist = this.distance() + 1;
+
+    const leftPoint = new Point(this.sensor.x - dist, this.sensor.y);
+    const upPoint = new Point(this.sensor.x, this.sensor.y - dist);
+    const rightPoint = new Point(this.sensor.x + dist, this.sensor.y);
+    const downPoint = new Point(this.sensor.x, this.sensor.y + dist);
+
+    segments.push(new Segment(leftPoint, upPoint));
+    segments.push(new Segment(upPoint, rightPoint));
+    segments.push(new Segment(rightPoint, downPoint));
+    segments.push(new Segment(downPoint, leftPoint));
+
+    return segments;
+  }
+
   public usesXY(x: number, y: number) {
     return (
       (this.beacon.x === x && this.beacon.y === y) ||
@@ -169,46 +228,4 @@ export class SensorBeacon {
     const distPoint = this.sensor.distance(point);
     return distPoint - this.distance() - 1;
   }
-}
-
-export class Point {
-  public x: number;
-  public y: number;
-
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-  }
-
-  public distance(other: Point): number {
-    const difX = Math.abs(this.x - other.x);
-    const difY = Math.abs(this.y - other.y);
-    return difX + difY;
-  }
-
-  public dir(other: Point): Dir {
-    if (other.x === this.x && other.y === this.y) {
-      return Dir.None;
-    }
-    if (other.x >= this.x && other.y >= this.y) {
-      return Dir.UpRight;
-    }
-    if (other.x <= this.x && other.y >= this.y) {
-      return Dir.UpLeft;
-    }
-    if (other.x >= this.x && other.y <= this.y) {
-      return Dir.DownRight;
-    }
-    if (other.x <= this.x && other.y <= this.y) {
-      return Dir.DownLeft;
-    }
-  }
-}
-
-enum Dir {
-  UpLeft,
-  UpRight,
-  DownRight,
-  DownLeft,
-  None,
 }
