@@ -14,7 +14,7 @@ describe("15.1", () => {
 
   it("Distance of sensor beacon through manhattan is right", () => {
     const sensorBeacon = new SensorBeacon(new Point(2, 18), new Point(-2, 15));
-    expect(sensorBeacon.distance).toEqual(7);
+    expect(sensorBeacon.distance()).toEqual(7);
   });
 
   it("Detected points dif at row 15 is 9", () => {

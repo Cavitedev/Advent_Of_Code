@@ -48,20 +48,70 @@ export class BeaconZone {
     return pointsCount;
   }
 
-  public getDistressSignal(start: number, end: number) {
-    for (let x = start; x <= end; x++) {
-      for (let y = start; y <= end; y++) {
-        const point = new Point(x, y);
-        const isDetected = this._isInSensorBeaconsSignals(point);
-        if (!isDetected) {
+  public getDistressSignal(start: number, end: number): Point {
+    for (const sensorBeacon of this.sensorsBeacons) {
+      const sensor = sensorBeacon.sensor;
+
+      const dist = sensorBeacon.distance() + 1;
+      const startX = Math.max(start, sensor.x - dist);
+      const endX = Math.min(end, sensor.x + dist);
+
+      for (let x = startX; x <= endX; ) {
+        const difY = -Math.abs(x - sensor.x) + dist;
+        const point = new Point(x, sensor.y + difY);
+
+        const difLimitY = Math.max(point.y - end, start - point.y);
+        if (difLimitY > 0) {
+          x += difLimitY;
+          continue;
+        }
+
+        const strongestSensorBeacon: SensorBeacon =
+          this._strongestSensor(point);
+        const strongestSensor = strongestSensorBeacon.sensor;
+        const bestDistance = strongestSensorBeacon.exceededDistance(point);
+        if (bestDistance >= 0) {
           return point;
+        } else {
+          x -= Math.min(Math.floor(bestDistance / 2), -1);
+        }
+      }
+
+      for (let x = endX; x > startX; ) {
+        const difY = -Math.abs(x - sensor.x) + dist;
+        const point = new Point(x, sensor.y - difY);
+
+        const difLimitY = Math.max(point.y - end, start - point.y);
+        if (difLimitY > 0) {
+          x -= difLimitY;
+          continue;
+        }
+
+        const strongestSensorBeacon: SensorBeacon =
+          this._strongestSensor(point);
+        const strongestSensor = strongestSensorBeacon.sensor;
+        const bestDistance = strongestSensorBeacon.exceededDistance(point);
+        if (bestDistance >= 0) {
+          return point;
+        } else {
+          x += Math.min(Math.floor(bestDistance / 2), -1);
         }
       }
     }
   }
 
-  private _isInSensorBeaconsSignals(point: Point) {
+  private _isInSensorBeaconsSignals(point: Point): boolean {
     return this.sensorsBeacons.some((sb) => sb.isPointInCheckArea(point));
+  }
+
+
+  
+  private _strongestSensor(point: Point): SensorBeacon {
+    return this.sensorsBeacons.reduce((prev, curr) => {
+      return prev.exceededDistance(point) < curr.exceededDistance(point)
+        ? prev
+        : curr;
+    });
   }
 }
 
@@ -115,6 +165,11 @@ export class SensorBeacon {
     const distPoint = this.sensor.distance(point);
     return distPoint <= this.distance();
   }
+
+  public exceededDistance(point: Point) {
+    const distPoint = this.sensor.distance(point);
+    return distPoint - this.distance() - 1;
+  }
 }
 
 export class Point {
@@ -131,4 +186,30 @@ export class Point {
     const difY = Math.abs(this.y - other.y);
     return difX + difY;
   }
+
+  public dir(other: Point): Dir {
+    if (other.x === this.x && other.y === this.y) {
+      return Dir.None;
+    }
+    if (other.x >= this.x && other.y >= this.y) {
+      return Dir.UpRight;
+    }
+    if (other.x <= this.x && other.y >= this.y) {
+      return Dir.UpLeft;
+    }
+    if (other.x >= this.x && other.y <= this.y) {
+      return Dir.DownRight;
+    }
+    if (other.x <= this.x && other.y <= this.y) {
+      return Dir.DownLeft;
+    }
+  }
+}
+
+enum Dir {
+  UpLeft,
+  UpRight,
+  DownRight,
+  DownLeft,
+  None,
 }
