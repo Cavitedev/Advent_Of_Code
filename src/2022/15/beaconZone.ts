@@ -47,6 +47,22 @@ export class BeaconZone {
 
     return pointsCount;
   }
+
+  public getDistressSignal(start: number, end: number) {
+    for (let x = start; x <= end; x++) {
+      for (let y = start; y <= end; y++) {
+        const point = new Point(x, y);
+        const isDetected = this._isInSensorBeaconsSignals(point);
+        if (!isDetected) {
+          return point;
+        }
+      }
+    }
+  }
+
+  private _isInSensorBeaconsSignals(point: Point) {
+    return this.sensorsBeacons.some((sb) => sb.isPointInCheckArea(point));
+  }
 }
 
 export class SensorBeacon {
@@ -71,15 +87,13 @@ export class SensorBeacon {
     return new SensorBeacon(sensorPoint, beaconPoint);
   }
 
-  public get distance(): number {
-    const difX = Math.abs(this.sensor.x - this.beacon.x);
-    const difY = Math.abs(this.sensor.y - this.beacon.y);
-    return difX + difY;
+  public distance(): number {
+    return this.sensor.distance(this.beacon);
   }
 
   public getDetectedEndPointsAtRow(row: number): Point[] {
     const heightDif = Math.abs(row - this.sensor.y);
-    const xDif = this.distance - heightDif;
+    const xDif = this.distance() - heightDif;
     if (xDif < 0) {
       return null;
     }
@@ -96,6 +110,11 @@ export class SensorBeacon {
       (this.sensor.x === x && this.sensor.y === y)
     );
   }
+
+  public isPointInCheckArea(point: Point) {
+    const distPoint = this.sensor.distance(point);
+    return distPoint <= this.distance();
+  }
 }
 
 export class Point {
@@ -105,5 +124,11 @@ export class Point {
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
+  }
+
+  public distance(other: Point): number {
+    const difX = Math.abs(this.x - other.x);
+    const difY = Math.abs(this.y - other.y);
+    return difX + difY;
   }
 }
