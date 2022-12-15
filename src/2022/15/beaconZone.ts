@@ -44,7 +44,7 @@ export class BeaconZone {
           continue;
         }
 
-        let nextValue = orderedLeftXPoints.find((p) => p > x);
+        let nextValue = orderedLeftXPoints.find((p) => p > x && p <= rightX);
         const nextX = nextValue == undefined ? rightX + 1 : nextValue;
 
         pointsCount += nextX - x;
