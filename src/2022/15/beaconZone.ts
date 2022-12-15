@@ -32,20 +32,33 @@ export class BeaconZone {
         .slice(0, i)
         .filter((p) => p[0] <= rightX || p[1] >= leftX);
 
-      for (let x = leftX; x <= rightX; x++) {
-        const existsPreviously = trimmedXPairsOfPoints.some((p) => {
+      const orderedLeftXPoints = trimmedXPairsOfPoints
+        .map((pp) => pp[0])
+        .sort((a, b) => a - b );
+      for (let x = leftX; x <= rightX; ) {
+        const overlappingPair = trimmedXPairsOfPoints.find((p) => {
           return p[0] <= x && p[1] >= x;
         });
-        const isSensorOrBeacon = this.sensorsBeacons.some((pp) =>
-          pp.usesXY(x, row)
-        );
-        if (!existsPreviously && !isSensorOrBeacon) {
-          pointsCount += 1;
+        if (overlappingPair) {
+          x = overlappingPair[1] + 1;
+          continue;
         }
+
+        let nextValue = orderedLeftXPoints.find((p) => p > x);
+        const nextX = nextValue == undefined ? rightX + 1 : nextValue;
+
+        pointsCount += nextX - x;
+        x = nextX;
       }
     }
 
-    return pointsCount;
+    const sensorAndBeaconsInRow = this.sensorsBeacons
+      .flatMap((sb) => [sb.sensor, sb.beacon])
+      .filter((p) => p.y === row)
+      .filter(
+        (v, i, a) => a.findIndex((v2) => v2.x === v.x && v2.y === v.y) === i
+      );
+    return pointsCount - sensorAndBeaconsInRow.length;
   }
 
   public getDistressSignal(start: number, end: number): Point {
