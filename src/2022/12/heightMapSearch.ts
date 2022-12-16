@@ -1,5 +1,5 @@
 import { HeightMap, HeightMapCell } from "./heightMap.js";
-import { PriorityQueue } from "./priorityQueue.js";
+import { PriorityQueue } from "../../common/priorityQueue.js";
 
 export class HeightMapSearch {
   public heightMap: HeightMap;
