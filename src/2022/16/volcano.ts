@@ -32,7 +32,9 @@ export class Volcano {
     } else if (workers === 2) {
       let bestTotalPressure = 0;
 
-      for (let i = 0; i < valvesWithCost / 2; i++) {
+      //Change for to check all combinations
+      //for (let i = 0; i < valvesWithCost / 6; i++)
+      for (let i = 0; i < 1; i++) {
         let lowerHalf = Math.floor(valvesWithCost / 2) - i;
         let upperHalf = Math.ceil(valvesWithCost / 2) + i;
 
