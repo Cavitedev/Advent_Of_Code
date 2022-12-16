@@ -115,6 +115,8 @@ export class Volcano {
     let time = startTime;
     let totalFlow = 0;
     let bestTotalFlow = 0;
+    const costValves = Object.values(this.valves).filter((v) => v.flowRate > 0);
+
     let travelledValves: Valve[] = [this.valves["AA"]];
     const currentChecks: number[] = [-1];
     while (currentChecks.length > 0) {
@@ -122,8 +124,13 @@ export class Volcano {
       let curCheck = ++currentChecks[index];
       const curValve = travelledValves[index];
 
+      const bestRemFlow = this._reaminingFlow(time, costValves);
       //Backtracking
-      if (time <= 0 || curCheck === curValve.transitiveTunnels.length) {
+      if (
+        bestRemFlow + totalFlow < bestTotalFlow ||
+        time <= 0 ||
+        curCheck === curValve.transitiveTunnels.length
+      ) {
         bestTotalFlow = Math.max(totalFlow, bestTotalFlow);
 
         if (curValve.opened) {
@@ -150,6 +157,22 @@ export class Volcano {
     }
 
     return bestTotalFlow;
+  }
+
+  private _reaminingFlow(time: number, valves: Valve[]) {
+    let remFlow = 0;
+    let realTime = Math.max(time - 2, 0);
+    const remainingValvesValues = valves
+      .filter((v) => !v.opened)
+      .map((v) => v.flowRate)
+      .sort((a, b) => b - a);
+
+    let i = 0;
+    while (realTime > 0) {
+      remFlow += (remainingValvesValues[i++] ?? 0) * realTime;
+      realTime -= 2;
+    }
+    return remFlow;
   }
 
   public calculateBestTotalFlowBruteForce(): number {
@@ -223,6 +246,10 @@ export class Valve {
 
   public open(time: number): number {
     this.opened = time;
+    return this.openValue(time);
+  }
+
+  public openValue(time: number): number {
     return this.flowRate * time;
   }
 }
