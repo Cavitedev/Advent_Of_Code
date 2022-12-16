@@ -25,6 +25,93 @@ export class Volcano {
 
   public calculateBestTotalFlow(startTime: number, workers: number): number {
     this.buildTransitiveTunnels();
+    const valvesWithCost = this.valves["AA"].transitiveTunnels.length;
+
+    if (workers === 1) {
+      return this._calculateBestSingleWorker(startTime);
+    } else if (workers === 2) {
+      let bestTotalPressure = 0;
+
+      for (let i = 0; i < valvesWithCost / 2; i++) {
+        let lowerHalf = Math.floor(valvesWithCost / 2) - i;
+        let upperHalf = Math.ceil(valvesWithCost / 2) + i;
+
+        const solutions1 = this._calculateSolutionsIndividually(
+          startTime,
+          lowerHalf
+        ).sort((a, b) => b.totalPressure - a.totalPressure);
+        const solutions2 = this._calculateSolutionsIndividually(
+          startTime,
+          upperHalf
+        ).sort((a, b) => b.totalPressure - a.totalPressure);
+
+        solutions1.splice(Math.max(solutions1.length / 10, 1000));
+        solutions2.splice(Math.max(solutions2.length / 10, 1000));
+
+        for (const solution of solutions1) {
+          const compSols = solution.complementarySolutions(solutions2);
+
+          const totalPressure =
+            solution.totalPressure +
+            Math.max(...compSols.map((s) => s.totalPressure));
+          bestTotalPressure = Math.max(totalPressure, bestTotalPressure);
+        }
+      }
+
+      return bestTotalPressure;
+    }
+  }
+
+  private _calculateSolutionsIndividually(
+    startTime: number,
+    length: number
+  ): Solution[] {
+    let time = startTime;
+    let totalFlow = 0;
+    let solutions: Solution[] = [];
+    let travelledValves: Valve[] = [this.valves["AA"]];
+    const currentChecks: number[] = [-1];
+    while (currentChecks.length > 0) {
+      let index = currentChecks.length - 1;
+      let curCheck = ++currentChecks[index];
+      const curValve = travelledValves[index];
+
+      //Backtracking
+      if (
+        time <= 0 ||
+        currentChecks.length == length + 1 ||
+        curCheck === curValve.transitiveTunnels.length
+      ) {
+        solutions.push(new Solution(totalFlow, [...travelledValves]));
+
+        if (curValve.opened) {
+          totalFlow -= curValve.flowRate * curValve.opened;
+
+          const prevValve = travelledValves[index - 1];
+          time = prevValve.opened ?? startTime;
+          curValve.opened = undefined;
+        }
+        currentChecks.pop();
+        travelledValves.pop();
+        continue;
+      }
+
+      const nextValveNode = curValve.transitiveTunnels[curCheck];
+      if (nextValveNode.valve.opened) continue;
+
+      const newTime = time - nextValveNode.gCost - 1;
+      if (newTime <= 0) continue;
+      time = newTime;
+      totalFlow += nextValveNode.valve.open(time);
+      travelledValves.push(nextValveNode.valve);
+      currentChecks.push(-1);
+    }
+
+    return solutions;
+  }
+
+  private _calculateBestSingleWorker(startTime: number): number {
+    this.buildTransitiveTunnels();
     let time = startTime;
     let totalFlow = 0;
     let bestTotalFlow = 0;
@@ -137,5 +224,27 @@ export class Valve {
   public open(time: number): number {
     this.opened = time;
     return this.flowRate * time;
+  }
+}
+
+class Solution {
+  public totalPressure: number;
+  public path: Valve[];
+
+  constructor(pressure: number, path: Valve[]) {
+    this.totalPressure = pressure;
+    this.path = path;
+  }
+
+  public complementarySolutions(otherSolutions: Solution[]): Solution[] {
+    const thisPath = this.pathWithoutInitNode();
+
+    return otherSolutions.filter((s) =>
+      s.pathWithoutInitNode().every((n) => !thisPath.includes(n))
+    );
+  }
+
+  public pathWithoutInitNode() {
+    return this.path.slice(1);
   }
 }

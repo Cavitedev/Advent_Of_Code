@@ -8,6 +8,6 @@ describe("16.2", () => {
 
   it("Test with input.txt", async () => {
     const result = await calculateBestFlow(26, 2, "input.txt");
-    expect(result).toBeGreaterThan(2447);
+    expect(result).toEqual(2675);
   });
 });
