@@ -23,9 +23,9 @@ export class Volcano {
     volcanoTunnelsSearch.buildTransitiveTunnels();
   }
 
-  public calculateBestTotalFlow(time: number, workers: number): number {
+  public calculateBestTotalFlow(startTime: number, workers: number): number {
     this.buildTransitiveTunnels();
-
+    let time = startTime;
     let totalFlow = 0;
     let bestTotalFlow = 0;
     let travelledValves: Valve[] = [this.valves["AA"]];
@@ -43,7 +43,7 @@ export class Volcano {
           totalFlow -= curValve.flowRate * curValve.opened;
 
           const prevValve = travelledValves[index - 1];
-          time = prevValve.opened ?? 30;
+          time = prevValve.opened ?? startTime;
           curValve.opened = undefined;
         }
         currentChecks.pop();
