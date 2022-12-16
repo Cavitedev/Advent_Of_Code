@@ -23,8 +23,10 @@ export class VolcanoTunnelsSearch {
         const checkingValve = open.pop();
 
         if (!checkedValves.has(checkingValve.valve)) {
-          valve.transitiveTunnels[checkingValve.valve.name] =
-            checkingValve.gCost;
+          if (checkingValve.valve.flowRate > 0) {
+            valve.transitiveTunnels.push(checkingValve);
+          }
+
           checkedValves.add(checkingValve.valve);
           open.push(...this._getSuccessors(checkingValve));
         }

@@ -1,11 +1,12 @@
 import { PriorityQueue } from "../../common/priorityQueue.js";
-import { VolcanoTunnelsSearch } from "./volcanoTunnelsSearch.js";
+import { ValveNode, VolcanoTunnelsSearch } from "./volcanoTunnelsSearch.js";
 
 export class Volcano {
   public valves: { [name: string]: Valve };
-  public startValve: Valve;
 
-  constructor() {}
+  constructor() {
+    this.valves = {};
+  }
 
   public readLine(line: string) {
     const name = /Valve (\w+) /.exec(line)[1];
@@ -14,12 +15,6 @@ export class Volcano {
     const valves = valvesStr.split(",").map((s) => s.trim());
 
     const newValve = new Valve(name, flowRate, valves);
-
-    if (!this.valves) {
-      this.valves = {};
-      this.startValve = newValve;
-    }
-
     this.valves[name] = newValve;
   }
 
@@ -28,19 +23,53 @@ export class Volcano {
     volcanoTunnelsSearch.buildTransitiveTunnels();
   }
 
-  public calculateBestTotalFlow(): number {
-    let time = 30;
+  public calculateBestTotalFlow(time: number, workers: number): number {
+    this.buildTransitiveTunnels();
+
     let totalFlow = 0;
     let bestTotalFlow = 0;
+    let travelledValves: Valve[] = [this.valves["AA"]];
+    const currentChecks: number[] = [-1];
+    while (currentChecks.length > 0) {
+      let index = currentChecks.length - 1;
+      let curCheck = ++currentChecks[index];
+      const curValve = travelledValves[index];
+
+      //Backtracking
+      if (time <= 0 || curCheck === curValve.transitiveTunnels.length) {
+        bestTotalFlow = Math.max(totalFlow, bestTotalFlow);
+
+        if (curValve.opened) {
+          totalFlow -= curValve.flowRate * curValve.opened;
+
+          const prevValve = travelledValves[index - 1];
+          time = prevValve.opened ?? 30;
+          curValve.opened = undefined;
+        }
+        currentChecks.pop();
+        travelledValves.pop();
+        continue;
+      }
+
+      const nextValveNode = curValve.transitiveTunnels[curCheck];
+      if (nextValveNode.valve.opened) continue;
+
+      const newTime = time - nextValveNode.gCost - 1;
+      if (newTime <= 0) continue;
+      time = newTime;
+      totalFlow += nextValveNode.valve.open(time);
+      travelledValves.push(nextValveNode.valve);
+      currentChecks.push(-1);
+    }
 
     return bestTotalFlow;
   }
 
-  public calculateBestTotalFlowBacktracking(): number {
+  public calculateBestTotalFlowBruteForce(): number {
     let time = 30;
     let totalFlow = 0;
     let bestTotalFlow = 0;
-    let currentValve = this.startValve;
+    let currentValve = this.valves["AA"];
     const currentChecks: number[] = [];
     let travelledValves: Valve[] = [currentValve];
     currentChecks.push(-2);
@@ -96,13 +125,13 @@ export class Valve {
   //Time remaining when it was opened
   public opened: number;
   //Name and number of steps to perform to reach a valve with some flow rate
-  public transitiveTunnels: { [name: string]: number };
+  public transitiveTunnels: ValveNode[];
 
   constructor(name: string, flowRate: number, tunnels: string[]) {
     this.name = name;
     this.flowRate = flowRate;
     this.tunnels = tunnels;
-    this.transitiveTunnels = {};
+    this.transitiveTunnels = [];
   }
 
   public open(time: number): number {

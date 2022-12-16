@@ -1,14 +1,7 @@
-import { calculateBestFlow } from "./16.1.js";
+import { calculateBestFlow } from "./16.js";
 import { Valve, Volcano } from "./volcano.js";
 
 describe("16.1", () => {
-  it("Building valve adds connected tunnels to the transitive tunnels", () => {
-    const valveAA = new Valve("AA", 0, ["DD", "BB"]);
-    const transitiveTunnels = { DD: 1, BB: 1 };
-
-    expect(valveAA.transitiveTunnels).toEqual(transitiveTunnels);
-  });
-
   it("Open valve of flow rate 2 at time 25 sets opened to 25 and returns 50 as the value", () => {
     const valveAA = new Valve("AA", 2, ["DD"]);
     const flow = valveAA.open(25);
@@ -26,7 +19,6 @@ describe("16.1", () => {
 
     const expectedValveAA = new Valve("AA", 0, ["DD", "II", "BB"]);
     expect(volcano.valves["AA"]).toEqual(expectedValveAA);
-    expect(volcano.startValve).toEqual(expectedValveAA);
     const expectedValveHH = new Valve("HH", 22, ["GG"]);
     expect(volcano.valves["HH"]).toEqual(expectedValveHH);
   });
@@ -57,12 +49,22 @@ describe("16.1", () => {
     it("Building transitive tunnels generates right numbers towards those valves", () => {
       volcano.buildTransitiveTunnels();
       const valveAA = volcano.valves["AA"];
-      expect(valveAA.transitiveTunnels["FF"]).toEqual(3);
+      expect(
+        valveAA.transitiveTunnels.find((v) => v.valve.name === "FF")
+      ).toBeUndefined();
+      expect(
+        valveAA.transitiveTunnels.find((v) => v.valve.name === "HH").gCost
+      ).toEqual(5);
     });
   });
 
-  // it("Works with test.txt", async () => {
-  //   const result = await calculateBestFlow("test.txt");
-  //   expect(result).toEqual(1651);
-  // });
+  it("Test with test.txt", async () => {
+    const result = await calculateBestFlow(30, 1, "test.txt");
+    expect(result).toEqual(1651);
+  });
+
+  it("Test with input.txt", async () => {
+    const result = await calculateBestFlow(30, 1, "input.txt");
+    expect(result).toEqual(2330);
+  });
 });

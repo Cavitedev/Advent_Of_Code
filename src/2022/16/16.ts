@@ -2,6 +2,8 @@ import { readFileLines } from "../../common/readfileLines.js";
 import { Volcano } from "./volcano.js";
 
 export async function calculateBestFlow(
+  time: number,
+  workers: number,
   file: string
 ): Promise<number> {
   const rl = readFileLines(__dirname, file);
@@ -12,7 +14,7 @@ export async function calculateBestFlow(
     volcano.readLine(line);
   }
 
-  const result = volcano.calculateBestTotalFlowBacktracking();
+  const result = volcano.calculateBestTotalFlow(time, workers);
 
   return result;
 }
