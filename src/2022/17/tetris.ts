@@ -13,6 +13,7 @@ export class Tetris {
   public simulateMovements(input: string, piecesCount: number): number {
     let currentPieceIndex = 0;
     let currentMovementIndex = 0;
+    let savePlacements = [{ height: 0, piece: 0, movement: 0, index: 0 }];
 
     for (let iter = 0; iter < piecesCount; iter++) {
       let currentPiece = pieces[currentPieceIndex];
@@ -54,6 +55,32 @@ export class Tetris {
           verticalPos -= 1;
         }
       }
+      const patternPieces = savePlacements.filter(
+        (p) =>
+          p.piece === currentPieceIndex && p.movement == currentMovementIndex
+      );
+      if (patternPieces.length > 2) {
+        const pat1 = patternPieces[1];
+        const pat2 = patternPieces[2];
+
+        const difHeight = pat2.height - pat1.height;
+        const patternLength = pat2.index - pat1.index;
+        const itersAfterPattern = piecesCount - pat1.index;
+        const fullIters = Math.floor(itersAfterPattern / patternLength);
+        const itersLastPattern = itersAfterPattern % patternLength;
+        const finalHeight =
+          savePlacements[pat1.index + itersLastPattern].height - pat1.height;
+
+        const retHeight = pat1.height + fullIters * difHeight + finalHeight;
+        return retHeight;
+      }
+
+      savePlacements.push({
+        height: this._lastEmptyRow() - 1,
+        piece: currentPieceIndex,
+        movement: currentMovementIndex,
+        index: iter,
+      });
     }
 
     // -1 because it needs the floor below, bottom floor is index 0, so first floor to count is 1
