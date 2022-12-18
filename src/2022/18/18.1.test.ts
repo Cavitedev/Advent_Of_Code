@@ -11,11 +11,11 @@ describe("18.1", () => {
         expect(lavaMap.boulders[0].length).toEqual(3);
         expect(lavaMap.boulders[0][0].length).toEqual(3);
 
-        expect(lavaMap.boulders[0][0][0]).toEqual(false);
-        expect(lavaMap.boulders[0][1][0]).toEqual(false);
-        lavaMap.boulders[0][0][0] = true;
-        expect(lavaMap.boulders[0][0][0]).toEqual(true);
-        expect(lavaMap.boulders[0][1][0]).toEqual(false);
+        expect(lavaMap.boulders[0][0][0].isBoulder).toEqual(false);
+        expect(lavaMap.boulders[0][1][0].isBoulder).toEqual(false);
+        lavaMap.boulders[0][0][0].isBoulder = true;
+        expect(lavaMap.boulders[0][0][0].isBoulder).toEqual(true);
+        expect(lavaMap.boulders[0][1][0].isBoulder).toEqual(false);
     });
 
     it("Reading lines of 2 positions that are not adyacent adds those positions and the total connected area is 10", () => {
@@ -24,8 +24,8 @@ describe("18.1", () => {
         lavaMap.readLine("2,2,2");
         lavaMap.readLine("0,2,2");
 
-        expect(lavaMap.boulders[2][2][2]).toEqual(true);
-        expect(lavaMap.boulders[0][2][2]).toEqual(true);
+        expect(lavaMap.boulders[2][2][2].isBoulder).toEqual(true);
+        expect(lavaMap.boulders[0][2][2].isBoulder).toEqual(true);
         expect(lavaMap.connectedFaces).toEqual(12);
     });
 
@@ -35,8 +35,8 @@ describe("18.1", () => {
         lavaMap.readLine("2,2,2");
         lavaMap.readLine("1,2,2");
 
-        expect(lavaMap.boulders[2][2][2]).toEqual(true);
-        expect(lavaMap.boulders[1][2][2]).toEqual(true);
+        expect(lavaMap.boulders[2][2][2].isBoulder).toEqual(true);
+        expect(lavaMap.boulders[1][2][2].isBoulder).toEqual(true);
         expect(lavaMap.connectedFaces).toEqual(10);
 
     })
