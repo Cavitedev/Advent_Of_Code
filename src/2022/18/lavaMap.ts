@@ -39,16 +39,10 @@ export class LavaMap{
 
     public excludeInteriorArea(){
         const size = this.boulders.length;
-        for(let x = 0; x<size; x+=size-1){
-            for(let y = 0; y<size; y+=size-1){
-                for(let z = 0; z<size; z+=size-1){
-                    const boulder = this.boulders[x][y][z];
-                    if(!boulder.isBoulder){
-                        boulder.isExterior = true;
-                    }
-                }
-            }
-        }
+        const outerEmptyPos = this.boulders.flat(2).filter(b => !b.isBoulder && b.isPointingOutwards(size));
+        outerEmptyPos.forEach((v, i, a) => {
+            a[i].isExterior = true;
+        })
 
         for(let x = 1; x<size-1; x++){
             for(let y = 1; y<size-1; y++){

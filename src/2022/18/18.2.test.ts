@@ -32,7 +32,7 @@ describe("18.2", () => {
         lavaMap.readLine("1,2,0");
         lavaMap.excludeInteriorArea();
 
-        expect(lavaMap.connectedFaces).toEqual(46);
+        expect(lavaMap.connectedFaces).toEqual(42);
 
     })
 
@@ -44,8 +44,8 @@ describe("18.2", () => {
     it("Test with input.txt", async () => {
         const result = await calculateConnectedCubes(false, 20, "input.txt");
 
-        //greater than 3292
-        expect(result).toEqual(3496)
+        //less than 3292
+        expect(result).toEqual(2064)
     });
 
 })
