@@ -43,8 +43,6 @@ describe("18.2", () => {
 
     it("Test with input.txt", async () => {
         const result = await calculateConnectedCubes(false, 20, "input.txt");
-
-        //less than 3292
         expect(result).toEqual(2064)
     });
 
