@@ -8,6 +8,7 @@
             "type": "node",
             "name": "vscode-jest-tests.v2",
             "request": "launch",
+            "sourceMaps": true,
             "args": [
                 "--runInBand",
                 "--watchAll=false",
