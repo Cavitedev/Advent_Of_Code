@@ -68,6 +68,13 @@ describe("19.1", () => {
             expect(candidateRobots.length).toEqual(4);
             expect(candidateRobots).toEqual([new OreRobot(3), new ClayRobot(3), new ObsidianRobot(3, 16), new GeodeRobot(3,9)]);
         });
+
+        it("If throughput produces 4 ores and the maximum ore cost per robot is 3, return that robot as unnecesary", () =>{
+            const blueprint = new Blueprint("Blueprint 2: Each ore robot costs 3 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 16 clay. Each geode robot costs 3 ore and 9 obsidian.")
+
+            const unnecesaryRobots = blueprint.unnecesaryRobots(new Resources({ore: 4}));
+            expect(unnecesaryRobots).toEqual(new OreRobot(3));
+        });
     });
 
 describe("Robot Optimizer", () => {
@@ -153,30 +160,45 @@ describe("Robot Optimizer", () => {
         });
     });
 
-    describe("Robot optimizer", () => {
-        it("Optimizing first blueprint from the test finds 9 geodes", () => {
-            const robotOptimizer = new RobotOptimizer();
-            const blueprint = new Blueprint("Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.");
-            robotOptimizer.optimizeBlueprint(blueprint);
 
-            expect(blueprint.maxGeodes).toEqual(9);
-        });
+    it("Optimizing first blueprint from the test finds 9 geodes", () => {
+        const robotOptimizer = new RobotOptimizer();
+        const blueprint = new Blueprint("Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.");
+        robotOptimizer.optimizeBlueprint(blueprint);
 
-        it("Optimizing second blueprint from the test finds 12 geodes", () => {
-            const robotOptimizer = new RobotOptimizer();
-            const blueprint = new Blueprint("Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 8 clay. Each geode robot costs 3 ore and 12 obsidian.");
-            robotOptimizer.optimizeBlueprint(blueprint);
+        expect(blueprint.maxGeodes).toEqual(9);
+    });
 
-            expect(blueprint.maxGeodes).toEqual(12);
-        });
+    it("Optimizing first blueprint from the test finds 7 geodes with 23 units of time", () => {
+        const robotOptimizer = new RobotOptimizer();
+        const blueprint = new Blueprint("Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.");
+        robotOptimizer.optimizeBlueprint(blueprint, 22);
 
-        it("Optimizing blueprint that builds geode last moment returns 1", () => {
-            const robotOptimizer = new RobotOptimizer();
-            const blueprint = new Blueprint("Blueprint 0: Each ore robot costs 100 ore. Each clay robot costs 21 ore. Each obsidian robot costs 1 ore and 1 clay. Each geode robot costs 1 ore and 1 obsidian.");
-            robotOptimizer.optimizeBlueprint(blueprint);
+        expect(blueprint.maxGeodes).toEqual(5);
+    });
 
-            expect(blueprint.maxGeodes).toEqual(1);
-        });
+    it("Optimizing first blueprint from the test finds 0 geodes with 18 units of time", () => {
+        const robotOptimizer = new RobotOptimizer();
+        const blueprint = new Blueprint("Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.");
+        robotOptimizer.optimizeBlueprint(blueprint, 18);
+
+        expect(blueprint.maxGeodes).toEqual(0);
+    });
+
+    it("Optimizing second blueprint from the test finds 12 geodes", () => {
+        const robotOptimizer = new RobotOptimizer();
+        const blueprint = new Blueprint("Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 8 clay. Each geode robot costs 3 ore and 12 obsidian.");
+        robotOptimizer.optimizeBlueprint(blueprint);
+
+        expect(blueprint.maxGeodes).toEqual(12);
+    });
+
+    it("Optimizing blueprint that builds geode last moment returns 1", () => {
+        const robotOptimizer = new RobotOptimizer();
+        const blueprint = new Blueprint("Blueprint 0: Each ore robot costs 100 ore. Each clay robot costs 18 ore. Each obsidian robot costs 1 ore and 1 clay. Each geode robot costs 1 ore and 1 obsidian.");
+        robotOptimizer.optimizeBlueprint(blueprint);
+
+        expect(blueprint.maxGeodes).toEqual(1);
     });
 
 
@@ -188,10 +210,11 @@ it("Test with text.txt",async () => {
 });
 
 it("Test with input.txt",async () => {
+    
     const res = await sumOfQualityLevels("input.txt");
 
-    //Greater than 1339
-    expect(res).toEqual(33);
+
+    expect(res).toEqual(1349);
 });
 
 })

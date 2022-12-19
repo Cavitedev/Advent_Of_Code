@@ -7,8 +7,7 @@ export class RobotOptimizer{
     public blueprints: Blueprint[] = [];
 
 
-    public optimizeBlueprint(blueprint: Blueprint){
-        const startTime = 24;
+    public optimizeBlueprint(blueprint: Blueprint, startTime:number = 24){
         let bestGeodes = 0;
 
         const startingNode = new OreNode(startTime, new Resources({}));
@@ -40,6 +39,7 @@ export class OreNode{
     public timeLeft: number;
     public builtRobots: Robot[] = []
     public resources: Resources;
+    public pendingRobots: Robot[];
 
     private static _DecreaseTime: number = 1;
 
@@ -57,14 +57,36 @@ export class OreNode{
         const candidateRobots = blueprint.candidateRobots(resourcesNextTurn);
         const availableRobots = blueprint.availableRobots(this.resources);
         const lastAvailableRobots = blueprint.availableRobots(this.resources.subtract(this.resourcesBuiltInTurn()))
-        const newAvailableRobots = availableRobots.filter(r => lastAvailableRobots.indexOf(r) === -1);
 
-        for(const robot of newAvailableRobots){
-            // I assume I can only build 1 robot per turn
-            const resourcesAfterCost = resourcesNextTurn.subtract(robot.cost).add(robot.throughput);
+        for(const pendingRobot of this.pendingRobots ?? []){
+            const index = lastAvailableRobots.indexOf(pendingRobot);
+            lastAvailableRobots.splice(index, index);
+        }
+        
+        const unnecesaryRobots = blueprint.unnecesaryRobots(this.resourcesBuiltInTurn());
+        let newAvailableRobots = availableRobots.filter(r => lastAvailableRobots.indexOf(r) === -1);
+
+
+        
+        newAvailableRobots = newAvailableRobots.filter(r => unnecesaryRobots.indexOf(r) === -1);
+
+        
+
+        //can only build 1 robot per turn, so it may need to check previous robots
+        for(let i = 0; i<newAvailableRobots.length; i++){
+            const robot = newAvailableRobots[i]
+            
+            const resourcesAfterCost = resourcesNextTurn.subtract(robot.cost);
             const nodeWithRobot = new OreNode(this.timeLeft - OreNode._DecreaseTime, resourcesAfterCost);
             nodeWithRobot.builtRobots.push(...this.builtRobots);
             nodeWithRobot.builtRobots.push(robot);
+
+            if(newAvailableRobots.length > 1){
+                const clone = newAvailableRobots.slice();
+                clone.splice(i, i);
+                nodeWithRobot.pendingRobots = clone;
+            }
+
             successors.push(nodeWithRobot);
         }
         if(candidateRobots.length != availableRobots.length){

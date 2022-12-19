@@ -54,6 +54,22 @@ export class Blueprint{
         return this.id * this.maxGeodes;
     }
 
+    public unnecesaryRobots(throughput:Resources): Robot[]{
+
+        const unnecesaryRobots: Robot[] = []
+        const throughputOres = throughput.ores();
+        for (let i = 0; i < throughputOres.length; i++) {
+            const oreProduction = throughputOres[i];
+            const maxNeed = Math.max(...this.robots.map(r => r.cost.ores[i]));
+            if(oreProduction >= maxNeed){
+                unnecesaryRobots.push(this.robots[i]);
+            }
+        }
+
+        return unnecesaryRobots;
+
+    }
+
 }
 
 export abstract class Robot{

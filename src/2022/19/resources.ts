@@ -18,6 +18,10 @@ export class Resources{
         this.geode = resources.geode ?? 0;
     }
 
+    public ores():number[]{
+        return [this.ore, this.clay, this.obsidian, this.geode];
+    }
+
 
     public add(other: Resources) : Resources{
 
