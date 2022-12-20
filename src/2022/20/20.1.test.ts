@@ -12,7 +12,6 @@ describe("20.1", () => {
     const num1 = new CircularValue(1);
     const num2 = new CircularValue(2);
     const num3 = new CircularValue(-3);
-    num1.isStart = true;
     num1.next = num2;
     num1.previous = num3;
     num2.next = num3;
@@ -37,7 +36,6 @@ describe("20.1", () => {
     num1.previous = num2;
     num2.next = num1;
     num2.previous = num3;
-    num2.isStart = true;
     num3.next = num2;
     num3.previous = num1;
     expect(mixingDecoder.encryptedCoordinated).toEqual([num1, num2, num3]);
@@ -60,7 +58,6 @@ describe("20.1", () => {
     num2.previous = num3;
     num3.next = num2;
     num3.previous = num1;
-    num3.isStart = true;
     expect(mixingDecoder.encryptedCoordinated).toEqual([num1, num2, num3]);
   });
 
