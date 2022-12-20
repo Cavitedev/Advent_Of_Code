@@ -25,10 +25,17 @@ export class MixingDecoder {
 
   public mixCoordinates() {
     for (const coordinate of this.encryptedCoordinated) {
-      const posisitionsToMove = coordinate.value;
-      const posisitionsToMoveNormalized =
-        posisitionsToMove % (this.encryptedCoordinated.length - 1);
-      coordinate.move(posisitionsToMoveNormalized);
+      const posMoveNorm = coordinate.value % (this.encryptedCoordinated.length - 1);
+      let posMoveNormBidirectional;
+
+      if (Math.abs(posMoveNorm) < this.encryptedCoordinated.length / 2) {
+        posMoveNormBidirectional = posMoveNorm % (this.encryptedCoordinated.length - 1);
+      } else {
+        const changePos = this.encryptedCoordinated.length - 1;
+        posMoveNormBidirectional = posMoveNorm > 0 ? posMoveNorm - changePos : posMoveNorm + changePos;
+      }
+
+      coordinate.move(posMoveNormBidirectional);
     }
   }
 
