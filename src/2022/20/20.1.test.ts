@@ -1,4 +1,4 @@
-import { sumOfQualityLevels } from "./20.1.js";
+import { sumOfQualityLevels } from "./20.js";
 import { CircularValue, MixingDecoder } from "./mixingDecoder.js";
 
 describe("20.1", () => {
@@ -99,12 +99,12 @@ describe("20.1", () => {
   });
 
   it("Test with test.txt", async () => {
-    const result = await sumOfQualityLevels("test.txt");
+    const result = await sumOfQualityLevels(1, 1, "test.txt");
     expect(result).toEqual(3);
   });
 
   it("Test with input.txt", async () => {
-    const result = await sumOfQualityLevels("input.txt");
+    const result = await sumOfQualityLevels(1, 1, "input.txt");
     expect(result).toEqual(1087);
   });
 });

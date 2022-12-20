@@ -1,8 +1,13 @@
 export class MixingDecoder {
   public encryptedCoordinated: CircularValue[] = [];
+  public decryptionKey: number;
+
+  constructor(decryptionKey: number = 1){
+    this.decryptionKey = decryptionKey;
+  }
 
   public readLine(line: string) {
-    const value = new CircularValue(+line);
+    const value = new CircularValue(+line * this.decryptionKey);
     if (this.encryptedCoordinated.length === 0) {
       value.isStart = true;
     } else {
@@ -23,8 +28,8 @@ export class MixingDecoder {
   public mixCoordinates() {
     for (const coordinate of this.encryptedCoordinated) {
       const posisitionsToMove = coordinate.value;
-
-      coordinate.move(posisitionsToMove);
+      const posisitionsToMoveNormalized = posisitionsToMove % (this.encryptedCoordinated.length - 1);
+      coordinate.move(posisitionsToMoveNormalized);
     }
   }
 
@@ -85,6 +90,7 @@ export class CircularValue {
       for (let i = 0; i < Math.abs(movement); i++) {
         currentMove = currentMove.next;
       }
+      if(currentMove === this) return;
       this.connectNext(currentMove.next);
       this.connectPrevious(currentMove);
     } else if (movement < 0) {
