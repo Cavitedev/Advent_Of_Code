@@ -27,7 +27,7 @@ describe("20.1", () => {
     mixingDecoder.readLine("2");
     mixingDecoder.readLine("-3");
     mixingDecoder.finishReading();
-    mixingDecoder.encryptedCoordinated[0].move(1);
+    mixingDecoder.encryptedCoordinated[0].move(1, []);
 
     const num1 = new CircularValue(1);
     const num2 = new CircularValue(2);
@@ -47,7 +47,7 @@ describe("20.1", () => {
     mixingDecoder.readLine("2");
     mixingDecoder.readLine("-3");
     mixingDecoder.finishReading();
-    mixingDecoder.encryptedCoordinated[0].move(-1);
+    mixingDecoder.encryptedCoordinated[0].move(-1, []);
 
     const num1 = new CircularValue(1);
     const num2 = new CircularValue(2);
@@ -96,12 +96,12 @@ describe("20.1", () => {
   });
 
   it("Test with test.txt", async () => {
-    const result = await sumOfQualityLevels(1, 1, "test.txt");
+    const result = await sumOfQualityLevels(1, 1, false, "test.txt");
     expect(result).toEqual(3);
   });
 
   it("Test with input.txt", async () => {
-    const result = await sumOfQualityLevels(1, 1, "input.txt");
+    const result = await sumOfQualityLevels(1, 1, false, "input.txt");
     expect(result).toEqual(1087);
   });
 });

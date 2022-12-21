@@ -4,6 +4,7 @@ import { MixingDecoder } from "./mixingDecoder.js";
 export async function sumOfQualityLevels(
   decriptionKey: number,
   numberOfMixes: number,
+  useCircVal: boolean,
   file: string
 ): Promise<number> {
   const rl = readFileLines(__dirname, file);
@@ -11,7 +12,7 @@ export async function sumOfQualityLevels(
   const mixingDecoder = new MixingDecoder(decriptionKey);
 
   for await (const line of rl) {
-    mixingDecoder.readLine(line);
+    mixingDecoder.readLine(line, useCircVal);
   }
   mixingDecoder.finishReading();
   for (let i = 0; i < numberOfMixes; i++) {
