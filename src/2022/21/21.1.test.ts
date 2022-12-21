@@ -41,7 +41,7 @@ describe("21.1", () => {
 
     it("Root monkey returns the right value through recursive values", () => {
         const yellNumber = monkeyYellers.monkeyYell("root");
-        expect(yellNumber).toEqual(152)
+        expect(yellNumber.value).toEqual(152)
     });
   });
 

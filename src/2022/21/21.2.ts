@@ -2,7 +2,7 @@ import { readFileLines } from "../../common/readfileLines.js";
 import { MonkeyYellers } from "./monkeyYellers.js";
 
 
-export async function rootMonkeyYell(
+export async function yourYell(
   file: string
 ): Promise<number> {
   const rl = readFileLines(__dirname, file);
@@ -14,6 +14,6 @@ export async function rootMonkeyYell(
   }
 
 
-  const result = monkeyYellers.monkeyYell("root");
-  return result.value;
+  const result = monkeyYellers.yourYell("humn");
+  return result;
 }
