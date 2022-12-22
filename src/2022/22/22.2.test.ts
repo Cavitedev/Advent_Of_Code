@@ -161,6 +161,17 @@ describe("22.2", () => {
       expect(person.dir).toBe(Up.Instance);
     });
 
+    it("Person walks down through connected folded cube, it doesn't need to rotate", () => {
+      const startCell = map.cells[0][10];
+      const person = new WalkingPerson(startCell, "");
+      map.person = person;
+      person.dir = Down.Instance;
+      person.executeAction("5", map);
+      const endCell = person.currentCell;
+      expect(person.dir).toBe(Down.Instance);
+      expect(endCell).toBe(map.cells[5][10]);
+    });
+
     it("Person walks right moving through folded cube rotates and moves properly", () => {
       const startCell = map.cells[5][10];
       const person = new WalkingPerson(startCell, "");
@@ -180,6 +191,17 @@ describe("22.2", () => {
       person.executeAction("4", map);
       const endCell = person.currentCell;
       expect(endCell).toBe(map.cells[5][1]);
+      expect(person.dir).toBe(Up.Instance);
+    });
+
+    it("Person walks up moving through folded cube but it is stopped by a wall", () => {
+      const startCell = map.cells[5][6];
+      const person = new WalkingPerson(startCell, "");
+      map.person = person;
+      person.dir = Up.Instance;
+      person.executeAction("4", map);
+      const endCell = person.currentCell;
+      expect(endCell).toBe(map.cells[4][6]);
       expect(person.dir).toBe(Up.Instance);
     });
 

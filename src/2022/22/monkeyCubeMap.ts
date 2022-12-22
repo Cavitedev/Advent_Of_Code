@@ -293,13 +293,9 @@ export class AdyCube {
     const rotation = this.endDirLine.rotation(rotationLine);
 
     let nextCell: ExistentCell;
-    if (this.endDirLine.directionStandard === rotationLine.directionStandard) {
+    if (this.endDirLine.directionStandard != rotationLine.directionStandard) {
       nextCell = line[index];
-    } else if (
-      rotation === Up.Instance ||
-      rotation === Right.Instance ||
-      rotation === Left.Instance
-    ) {
+    } else {
       nextCell = line[line.length - 1 - index];
     }
 
@@ -307,7 +303,11 @@ export class AdyCube {
       if (rotation === Up.Instance) {
         person.dir = person.dir.rotateRightNTimes(2);
       } else {
-        person.dir = person.dir.rotate(rotation);
+        if (
+          this.endDirLine.directionStandard === rotationLine.directionStandard
+        ) {
+          person.dir = person.dir.rotate(rotation);
+        }
       }
 
       return nextCell;
