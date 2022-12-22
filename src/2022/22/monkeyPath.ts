@@ -45,6 +45,7 @@ export class WalkingPerson {
   }
 
   public walk(monkeyMap: MonkeyMap) {
+    monkeyMap.person = this;
     let nextAction = this.nextAction();
     while (nextAction) {
       this.executeAction(nextAction, monkeyMap);
@@ -61,8 +62,7 @@ export class WalkingPerson {
       const posToMove: number = +nextAction;
       this.currentCell = monkeyMap.cellAfterNMovementsDir(
         this.currentCell,
-        posToMove,
-        this.dir
+        posToMove
       );
     }
   }

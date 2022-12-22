@@ -1,5 +1,6 @@
-import { ExistentCell, MapCell } from "./cellsMonkeyMap.js";
+import { ExistentCell } from "./cellsMonkeyMap.js";
 import { CubeSide } from "./cubeSide.js";
+import { WalkingPerson } from "./monkeyPath.js";
 
 export abstract class Direction {
   public static Directions(): Direction[] {
@@ -10,10 +11,62 @@ export abstract class Direction {
   public abstract get moveLeft(): Direction;
   public abstract get opposite(): Direction;
   public abstract get value(): number;
-  public abstract ady<T>(i: number, j: number, cells: T[][]): T;
-  public abstract adySeamless<T>(i: number, j: number, cells: T[][]): T;
-  public abstract adyInCube(cell: ExistentCell): ExistentCell;
+  public abstract get numberOfRightRotations(): number;
+  public abstract get numberOfRightRotationsForMatrixSide(): number;
+  public abstract get directionStandard(): boolean;
+  public abstract ady<T>(i: number, j: number, matrix: T[][]): T;
+  public abstract adySeamless<T>(i: number, j: number, matrix: T[][]): T;
+  public abstract line<T>(matrix: T[][]): T[];
+  public abstract adyInCube(
+    cell: ExistentCell,
+    person: WalkingPerson
+  ): ExistentCell;
   public abstract conSide(cube: CubeSide): CubeSide;
+
+  public rotation(dir: Direction): Direction {
+    if (this === dir) {
+      return Up.Instance;
+    }
+    dir = dir.moveLeft;
+    if (this === dir) {
+      return Left.Instance;
+    }
+
+    dir = dir.moveLeft;
+    if (this === dir) {
+      return Down.Instance;
+    }
+
+    dir = dir.moveLeft;
+    if (this === dir) {
+      return Right.Instance;
+    }
+  }
+
+  public rotateRightNTimes(times: number): Direction {
+    let rotDir: Direction = this;
+    times = (times + 4) % 4;
+    for (let i = 0; i < times; i++) {
+      rotDir = rotDir.moveRight;
+    }
+    return rotDir;
+  }
+
+  public rotate(dir: Direction): Direction {
+    let rotDir: Direction = this;
+    for (let i = 0; i < dir.numberOfRightRotations; i++) {
+      rotDir = rotDir.moveRight;
+    }
+    return rotDir;
+  }
+
+  public matrixSide(dir: Direction): Direction {
+    let rotDir: Direction = this;
+    for (let i = 0; i < dir.numberOfRightRotationsForMatrixSide; i++) {
+      rotDir = rotDir.moveRight;
+    }
+    return rotDir;
+  }
 }
 
 export class Left extends Direction {
@@ -31,27 +84,43 @@ export class Left extends Direction {
   }
 
   public get opposite(): Direction {
-    return Left.Instance;
+    return Right.Instance;
   }
 
   public get value(): number {
     return 2;
   }
 
-  public ady<T>(i: number, j: number, cells: T[][]): T {
-    return cells?.[i]?.[j - 1];
+  public get numberOfRightRotations(): number {
+    return 3;
   }
 
-  public adyInCube(cell: ExistentCell): ExistentCell {
-    return cell.cube.adyCellLeft(cell);
+  public get numberOfRightRotationsForMatrixSide(): number {
+    return 3;
   }
 
-  public adySeamless<T>(i: number, j: number, cells: T[][]): T {
+  public get directionStandard(): boolean {
+    return false;
+  }
+
+  public ady<T>(i: number, j: number, matrix: T[][]): T {
+    return matrix?.[i]?.[j - 1];
+  }
+
+  public adySeamless<T>(i: number, j: number, matrix: T[][]): T {
     if (j > 0) {
-      return cells[i][j - 1];
+      return matrix[i][j - 1];
     } else {
-      return cells[i][cells[i].length - 1];
+      return matrix[i][matrix[i].length - 1];
     }
+  }
+
+  public line<T>(matrix: T[][]): T[] {
+    return matrix.map((r) => r[0]);
+  }
+
+  public adyInCube(cell: ExistentCell, person: WalkingPerson): ExistentCell {
+    return cell.cube.adyCellLeft(cell, person);
   }
 
   public conSide(cube: CubeSide): CubeSide {
@@ -81,20 +150,36 @@ export class Up extends Direction {
     return 3;
   }
 
-  public ady<T>(i: number, j: number, cells: T[][]): T {
-    return cells?.[i - 1]?.[j];
+  public get numberOfRightRotations(): number {
+    return 0;
   }
 
-  public adySeamless<T>(i: number, j: number, cells: T[][]): T {
+  public get numberOfRightRotationsForMatrixSide(): number {
+    return 0;
+  }
+
+  public get directionStandard(): boolean {
+    return true;
+  }
+
+  public ady<T>(i: number, j: number, matrix: T[][]): T {
+    return matrix?.[i - 1]?.[j];
+  }
+
+  public adySeamless<T>(i: number, j: number, matrix: T[][]): T {
     if (i > 0) {
-      return cells[i - 1][j];
+      return matrix[i - 1][j];
     } else {
-      return cells[cells.length - 1][j];
+      return matrix[matrix.length - 1][j];
     }
   }
 
-  public adyInCube(cell: ExistentCell): ExistentCell {
-    return cell.cube.adyCellUp(cell);
+  public line<T>(matrix: T[][]): T[] {
+    return matrix[0];
+  }
+
+  public adyInCube(cell: ExistentCell, person: WalkingPerson): ExistentCell {
+    return cell.cube.adyCellUp(cell, person);
   }
 
   public conSide(cube: CubeSide): CubeSide {
@@ -124,20 +209,37 @@ export class Right extends Direction {
     return 0;
   }
 
-  public ady<T>(i: number, j: number, cells: T[][]): T {
-    return cells?.[i]?.[j + 1];
+  public get numberOfRightRotations(): number {
+    return 1;
   }
 
-  public adySeamless<T>(i: number, j: number, cells: T[][]): T {
-    if (j < cells[i].length - 1) {
-      return cells[i][j + 1];
+  public get numberOfRightRotationsForMatrixSide(): number {
+    return 1;
+  }
+
+  public get directionStandard(): boolean {
+    return true;
+  }
+
+  public ady<T>(i: number, j: number, matrix: T[][]): T {
+    return matrix?.[i]?.[j + 1];
+  }
+
+  public adySeamless<T>(i: number, j: number, matrix: T[][]): T {
+    if (j < matrix[i].length - 1) {
+      return matrix[i][j + 1];
     } else {
-      return cells[i][0];
+      return matrix[i][0];
     }
   }
 
-  public adyInCube(cell: ExistentCell): ExistentCell {
-    return cell.cube.adyCellRight(cell);
+  public line<T>(matrix: T[][]): T[] {
+    const lastCol = matrix[0].length - 1;
+    return matrix.map((r) => r[lastCol]);
+  }
+
+  public adyInCube(cell: ExistentCell, person: WalkingPerson): ExistentCell {
+    return cell.cube.adyCellRight(cell, person);
   }
 
   public conSide(cube: CubeSide): CubeSide {
@@ -167,20 +269,37 @@ export class Down extends Direction {
     return 1;
   }
 
-  public ady<T>(i: number, j: number, cells: T[][]): T {
-    return cells?.[i + 1]?.[j];
+  public get numberOfRightRotations(): number {
+    return 2;
   }
 
-  public adySeamless<T>(i: number, j: number, cells: T[][]): T {
-    if (i < cells.length - 1) {
-      return cells[i + 1][j];
+  public get numberOfRightRotationsForMatrixSide(): number {
+    return 0;
+  }
+
+  public get directionStandard(): boolean {
+    return false;
+  }
+
+  public ady<T>(i: number, j: number, matrix: T[][]): T {
+    return matrix?.[i + 1]?.[j];
+  }
+
+  public adySeamless<T>(i: number, j: number, matrix: T[][]): T {
+    if (i < matrix.length - 1) {
+      return matrix[i + 1][j];
     } else {
-      return cells[0][j];
+      return matrix[0][j];
     }
   }
 
-  public adyInCube(cell: ExistentCell): ExistentCell {
-    return cell.cube.adyCellDown(cell);
+  public line<T>(matrix: T[][]): T[] {
+    const lastRow = matrix.length - 1;
+    return matrix[lastRow];
+  }
+
+  public adyInCube(cell: ExistentCell, person: WalkingPerson): ExistentCell {
+    return cell.cube.adyCellDown(cell, person);
   }
 
   public conSide(cube: CubeSide): CubeSide {

@@ -4,10 +4,12 @@ import {
   UnexistentCell,
   WallCell,
 } from "./cellsMonkeyMap.js";
-import { Direction, Right } from "./direction.js";
+import { Direction } from "./direction.js";
+import { WalkingPerson } from "./monkeyPath.js";
 
 export class MonkeyMap {
   public cells: MapCell[][];
+  public person: WalkingPerson;
 
   constructor() {
     this.cells = [];
@@ -44,20 +46,20 @@ export class MonkeyMap {
   public connectedCellDir(cell: MapCell, dir: Direction): MapCell {
     let adyCell: MapCell = cell;
     do {
-      adyCell = dir.adySeamless<MapCell>(adyCell.row, adyCell.column, this.cells);
+      adyCell = dir.adySeamless<MapCell>(
+        adyCell.row,
+        adyCell.column,
+        this.cells
+      );
     } while (!adyCell.exists);
 
     return adyCell;
   }
 
-  public cellAfterNMovementsDir(
-    cell: MapCell,
-    movements: number,
-    dir: Direction
-  ): MapCell {
+  public cellAfterNMovementsDir(cell: MapCell, movements: number): MapCell {
     let moveCell = cell;
     for (let i = 0; i < movements; i++) {
-      const nextCell = this.connectedCellDir(moveCell, dir);
+      const nextCell = this.connectedCellDir(moveCell, this.person.dir);
       if (!nextCell.canTravel) {
         return moveCell;
       }

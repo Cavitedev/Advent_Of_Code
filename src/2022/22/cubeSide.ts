@@ -9,6 +9,15 @@ export abstract class CubeSide {
   public abstract get down(): CubeSide;
   public abstract get right(): CubeSide;
   public abstract get left(): CubeSide;
+
+  public dirToSide(side: CubeSide) {
+    for (const dir of Direction.Directions()) {
+      const connectedSide = this.connectedSide(dir);
+      if (side === connectedSide) {
+        return dir;
+      }
+    }
+  }
 }
 
 export class UpCubeSide extends CubeSide {
