@@ -1,12 +1,13 @@
+import { MapCell } from "./cellsMonkeyMap.js";
 import { Direction, Right } from "./direction.js";
-import { MapCell, MonkeyMap } from "./monkeyMap.js";
+import { MonkeyMap } from "./monkeyMap.js";
 
 export class MonkeyPath {
   public walkingPerson: WalkingPerson;
   public monkeyMap: MonkeyMap;
 
-  constructor() {
-    this.monkeyMap = new MonkeyMap();
+  constructor(monkeyMap: MonkeyMap) {
+    this.monkeyMap = monkeyMap;
   }
 
   public readLine(line: string) {

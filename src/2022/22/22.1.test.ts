@@ -1,6 +1,7 @@
-import { jungleEndPos } from "./22.1.js";
+import { jungleEndPos } from "./22.js";
+import { EmptyCell, UnexistentCell, WallCell } from "./cellsMonkeyMap.js";
 import { Down, Left, Right, Up } from "./direction.js";
-import { EmptyCell, MonkeyMap, UnexistentCell, WallCell } from "./monkeyMap.js";
+import { MonkeyMap } from "./monkeyMap.js";
 import { WalkingPerson } from "./monkeyPath.js";
 
 describe("22.1", () => {
@@ -96,12 +97,12 @@ describe("22.1", () => {
   });
 
   it("Test with test.txt", async () => {
-    const result = await jungleEndPos("test.txt");
+    const result = await jungleEndPos(false, "test.txt");
     expect(result).toEqual(6032);
   });
 
   it("Test with input.txt", async () => {
-    const result = await jungleEndPos("input.txt");
+    const result = await jungleEndPos(false, "input.txt");
     expect(result).toEqual(29408);
   });
 });

@@ -1,3 +1,9 @@
+import {
+  EmptyCell,
+  MapCell,
+  UnexistentCell,
+  WallCell,
+} from "./cellsMonkeyMap.js";
 import { Direction, Right } from "./direction.js";
 
 export class MonkeyMap {
@@ -38,7 +44,7 @@ export class MonkeyMap {
   public connectedCellDir(cell: MapCell, dir: Direction): MapCell {
     let adyCell: MapCell = cell;
     do {
-      adyCell = dir.ady<MapCell>(adyCell.row, adyCell.column, this.cells);
+      adyCell = dir.adySeamless<MapCell>(adyCell.row, adyCell.column, this.cells);
     } while (!adyCell.exists);
 
     return adyCell;
@@ -63,62 +69,5 @@ export class MonkeyMap {
 
   public getFirstCell() {
     return this.cells[0].find((c) => c.exists && c.canTravel);
-  }
-}
-
-export abstract class MapCell {
-  public row: number;
-  public column: number;
-
-  constructor(row: number, column: number) {
-    this.row = row;
-    this.column = column;
-  }
-
-  public abstract get exists(): boolean;
-  public abstract get canTravel(): boolean;
-}
-
-export class UnexistentCell extends MapCell {
-  constructor(row: number, column: number) {
-    super(row, column);
-  }
-
-  public get exists(): boolean {
-    return false;
-  }
-
-  public get canTravel(): boolean {
-    return false;
-  }
-}
-
-export abstract class ExistentCell extends MapCell {
-  constructor(row: number, column: number) {
-    super(row, column);
-  }
-
-  public get exists(): boolean {
-    return true;
-  }
-}
-
-export class EmptyCell extends ExistentCell {
-  constructor(row: number, column: number) {
-    super(row, column);
-  }
-
-  public get canTravel(): boolean {
-    return true;
-  }
-}
-
-export class WallCell extends ExistentCell {
-  constructor(row: number, column: number) {
-    super(row, column);
-  }
-
-  public get canTravel(): boolean {
-    return false;
   }
 }

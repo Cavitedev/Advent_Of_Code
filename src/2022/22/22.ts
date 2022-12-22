@@ -1,10 +1,16 @@
 import { readFileLines } from "../../common/readfileLines.js";
+import { MonkeyCubeMap } from "./monkeyCubeMap.js";
+import { MonkeyMap } from "./monkeyMap.js";
 import { MonkeyPath } from "./monkeyPath.js";
 
-export async function jungleEndPos(file: string): Promise<number> {
+export async function jungleEndPos(
+  isCube: boolean,
+  file: string
+): Promise<number> {
   const rl = readFileLines(__dirname, file);
 
-  const monkeyPath = new MonkeyPath();
+  const monekeyMap: MonkeyMap = isCube ? new MonkeyCubeMap() : new MonkeyMap();
+  const monkeyPath = new MonkeyPath(monekeyMap);
 
   for await (const line of rl) {
     monkeyPath.readLine(line);
