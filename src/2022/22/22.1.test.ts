@@ -63,17 +63,19 @@ describe("22.1", () => {
 
     it("Walking many positions crossing map goes until wall is found", () => {
       const startCell = map.cells[5][10];
-      const endCell = map.cellAfterNMovementsDir(
-        startCell,
-        100,
-        Right.Instance
-      );
+      const person = new WalkingPerson(startCell, "");
+      person.dir = Right.Instance;
+      map.person = person;
+      const endCell = map.cellAfterNMovementsDir(startCell, 100);
       expect(endCell).toBe(map.cells[5][7]);
     });
 
     it("Walking before wall is found, walks n positions", () => {
       const startCell = map.cells[5][10];
-      const endCell = map.cellAfterNMovementsDir(startCell, 5, Right.Instance);
+      const person = new WalkingPerson(startCell, "");
+      person.dir = Right.Instance;
+      map.person = person;
+      const endCell = map.cellAfterNMovementsDir(startCell, 5);
       expect(endCell).toBe(map.cells[5][3]);
     });
   });

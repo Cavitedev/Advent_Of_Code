@@ -45,10 +45,16 @@ export abstract class Direction {
 
   public rotateRightNTimes(times: number): Direction {
     let rotDir: Direction = this;
-    times = (times + 4) % 4;
-    for (let i = 0; i < times; i++) {
-      rotDir = rotDir.moveRight;
+    if (times >= 0) {
+      for (let i = 0; i < times; i++) {
+        rotDir = rotDir.moveRight;
+      }
+    } else {
+      for (let i = 0; i < -times; i++) {
+        rotDir = rotDir.moveLeft;
+      }
     }
+
     return rotDir;
   }
 

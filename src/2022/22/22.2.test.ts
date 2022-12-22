@@ -1,3 +1,4 @@
+import { readFileLines } from "../../common/readfileLines.js";
 import { jungleEndPos } from "./22.js";
 import {
   BackCubeSide,
@@ -8,8 +9,9 @@ import {
   UpCubeSide,
 } from "./cubeSide.js";
 import { Down, Left, Right, Up } from "./direction.js";
-import { CubeFace, MonkeyCubeMap } from "./monkeyCubeMap.js";
-import { WalkingPerson } from "./monkeyPath.js";
+import { MonkeyCubeMap } from "./monkeyCubeMap.js";
+import { MonkeyMap } from "./monkeyMap.js";
+import { MonkeyPath, WalkingPerson } from "./monkeyPath.js";
 
 describe("22.2", () => {
   describe("Test map", () => {
@@ -82,6 +84,21 @@ describe("22.2", () => {
       expect(map.cubeFaces[2].matrixOrientation).toBe(Up.Instance);
       expect(map.cubeFaces[4].matrixOrientation).toBe(Up.Instance);
       expect(map.cubeFaces[5].matrixOrientation).toBe(Left.Instance);
+    });
+
+    it("Connections of side with matrix to the left takes into account the matrix", () => {
+      const face = map.cubeFaces[5];
+      const upFace = face.adyAtDir(Up.Instance);
+      expect(upFace.cubeFace).toBe(map.cubeFaces[3]);
+
+      const rightFace = face.adyAtDir(Right.Instance);
+      expect(rightFace.cubeFace).toBe(map.cubeFaces[0]);
+
+      const downFace = face.adyAtDir(Down.Instance);
+      expect(downFace.cubeFace).toBe(map.cubeFaces[1]);
+
+      const leftFace = face.adyAtDir(Left.Instance);
+      expect(leftFace.cubeFace).toBe(map.cubeFaces[4]);
     });
 
     it("The dirs between faces should be right", () => {
@@ -161,6 +178,16 @@ describe("22.2", () => {
       expect(person.dir).toBe(Up.Instance);
     });
 
+    it("Move right if face with changed matrix, it moves to the right face", () => {
+      const startCell = map.cells[8][15];
+      const person = new WalkingPerson(startCell, "");
+      person.dir = Right.Instance;
+      map.person = person;
+      const endCell = map.connectedCellDir(startCell, Right.Instance);
+      expect(endCell).toBe(map.cells[3][11]);
+      expect(person.dir).toBe(Left.Instance);
+    });
+
     it("Person walks down through connected folded cube, it doesn't need to rotate", () => {
       const startCell = map.cells[0][10];
       const person = new WalkingPerson(startCell, "");
@@ -212,6 +239,97 @@ describe("22.2", () => {
     // });
   });
 
+  describe("Input map", () => {
+    const map: MonkeyCubeMap = new MonkeyCubeMap();
+    const monkeyPath = new MonkeyPath(map);
+
+    beforeAll(async () => {
+      const rl = readFileLines("src/2022/22/", "input.txt");
+
+      for await (const line of rl) {
+        monkeyPath.readLine(line);
+      }
+      monkeyPath.finishReading();
+    });
+
+    it("There are 6 faces", () => {
+      expect(map.cubeFaces.length).toEqual(6);
+    });
+
+    it("After reading the cube sides are correct", () => {
+      expect(map.cubeFaces[0].cubeSide).toBe(UpCubeSide.Instance);
+      expect(map.cubeFaces[1].cubeSide).toBe(RightCubeSide.Instance);
+      expect(map.cubeFaces[2].cubeSide).toBe(FrontCubeSide.Instance);
+      expect(map.cubeFaces[3].cubeSide).toBe(LeftCubeSide.Instance);
+      expect(map.cubeFaces[4].cubeSide).toBe(DownCubeSide.Instance);
+      expect(map.cubeFaces[5].cubeSide).toBe(BackCubeSide.Instance);
+    });
+
+    it("Up side has adyacents setup correctly", () => {
+      const face = map.cubeFaces[0];
+      expect(face.matrixOrientation).toBe(Up.Instance);
+      expect(face.cubeFaceAtDir(Down.Instance)).toBe(map.cubeFaces[2]);
+      expect(face.cubeFaceAtDir(Up.Instance)).toBe(map.cubeFaces[5]);
+      expect(face.cubeFaceAtDir(Right.Instance)).toBe(map.cubeFaces[1]);
+      expect(face.cubeFaceAtDir(Left.Instance)).toBe(map.cubeFaces[3]);
+    });
+
+    it("Front side has adyacents setup correctly", () => {
+      const face = map.cubeFaces[2];
+      expect(face.matrixOrientation).toBe(Up.Instance);
+      expect(face.cubeFaceAtDir(Down.Instance)).toBe(map.cubeFaces[4]);
+      expect(face.cubeFaceAtDir(Up.Instance)).toBe(map.cubeFaces[0]);
+      expect(face.cubeFaceAtDir(Right.Instance)).toBe(map.cubeFaces[1]);
+      expect(face.cubeFaceAtDir(Left.Instance)).toBe(map.cubeFaces[3]);
+    });
+
+    it("Right side has adyacents setup correctly", () => {
+      const face = map.cubeFaces[1];
+      expect(face.matrixOrientation).toBe(Right.Instance);
+      expect(face.cubeFaceAtDir(Down.Instance)).toBe(map.cubeFaces[2]);
+      expect(face.cubeFaceAtDir(Up.Instance)).toBe(map.cubeFaces[5]);
+      expect(face.cubeFaceAtDir(Right.Instance)).toBe(map.cubeFaces[4]);
+      expect(face.cubeFaceAtDir(Left.Instance)).toBe(map.cubeFaces[0]);
+    });
+
+    it("Down side has adyacents setup correctly", () => {
+      const face = map.cubeFaces[4];
+      expect(face.matrixOrientation).toBe(Up.Instance);
+      expect(face.cubeFaceAtDir(Down.Instance)).toBe(map.cubeFaces[5]);
+      expect(face.cubeFaceAtDir(Up.Instance)).toBe(map.cubeFaces[2]);
+      expect(face.cubeFaceAtDir(Right.Instance)).toBe(map.cubeFaces[1]);
+      expect(face.cubeFaceAtDir(Left.Instance)).toBe(map.cubeFaces[3]);
+    });
+
+    it("Left side has adyacents setup correctly", () => {
+      const face = map.cubeFaces[3];
+      expect(face.matrixOrientation).toBe(Right.Instance);
+      expect(face.cubeFaceAtDir(Down.Instance)).toBe(map.cubeFaces[5]);
+      expect(face.cubeFaceAtDir(Up.Instance)).toBe(map.cubeFaces[2]);
+      expect(face.cubeFaceAtDir(Right.Instance)).toBe(map.cubeFaces[4]);
+      expect(face.cubeFaceAtDir(Left.Instance)).toBe(map.cubeFaces[0]);
+    });
+
+    it("Back side has adyacents setup correctly", () => {
+      const face = map.cubeFaces[5];
+      expect(face.matrixOrientation).toBe(Right.Instance);
+      expect(face.cubeFaceAtDir(Down.Instance)).toBe(map.cubeFaces[1]);
+      expect(face.cubeFaceAtDir(Up.Instance)).toBe(map.cubeFaces[3]);
+      expect(face.cubeFaceAtDir(Right.Instance)).toBe(map.cubeFaces[4]);
+      expect(face.cubeFaceAtDir(Left.Instance)).toBe(map.cubeFaces[0]);
+    });
+
+    it("Right side moves down enters front face from the right and updates rotation", () => {
+      const startCell = map.cells[49][104];
+      const person = new WalkingPerson(startCell, "");
+      map.person = person;
+      person.dir = Down.Instance;
+      const endCell = map.connectedCellDir(startCell, Down.Instance);
+      expect(endCell).toBe(map.cells[54][99]);
+      expect(person.dir).toBe(Left.Instance);
+    });
+  });
+
   it("Test with test.txt", async () => {
     const result = await jungleEndPos(true, "test.txt");
     expect(result).toEqual(5031);
@@ -219,6 +337,8 @@ describe("22.2", () => {
 
   it("Test with input.txt", async () => {
     const result = await jungleEndPos(true, "input.txt");
-    expect(result).toEqual(29408);
+    //More than 113066
+    //less than 118066
+    expect(result).toEqual(115311);
   });
 });

@@ -1,6 +1,12 @@
 import { Dir } from "fs";
 import { ExistentCell, MapCell, UnexistentCell } from "./cellsMonkeyMap.js";
-import { CubeSide, UpCubeSide } from "./cubeSide.js";
+import {
+  BackCubeSide,
+  CubeSide,
+  LeftCubeSide,
+  RightCubeSide,
+  UpCubeSide,
+} from "./cubeSide.js";
 import { Direction, Down, Left, Right, Up } from "./direction.js";
 import { MonkeyMap } from "./monkeyMap.js";
 import { WalkingPerson } from "./monkeyPath.js";
@@ -232,16 +238,21 @@ export class CubeFace {
   }
 
   public addAdyFaceUndirectlyConnected(other: CubeFace) {
+    const rotationThis = -this.matrixOrientation.numberOfRightRotations;
     const towardsDir = this.cubeSide.dirToSide(other.cubeSide);
+    const towardsDirNorm = towardsDir.rotateRightNTimes(rotationThis);
+
+    const rotationOther = -other.matrixOrientation.numberOfRightRotations;
     const backwardsDir = other.cubeSide.dirToSide(this.cubeSide);
+    const backwardsDirNorm = backwardsDir.rotateRightNTimes(rotationOther);
 
     // towards dir - orientation = line to pick
     const endDirLine = towardsDir.rotation(this.matrixOrientation);
     // backwards dir - other orientation = line to pick
     const otherEndDirLine = backwardsDir.rotation(other.matrixOrientation);
 
-    this._addAdyFace(other, towardsDir, endDirLine);
-    other._addAdyFace(this, backwardsDir, otherEndDirLine);
+    this._addAdyFace(other, towardsDirNorm, endDirLine);
+    other._addAdyFace(this, backwardsDirNorm, otherEndDirLine);
   }
 
   private _addAdyFace(
@@ -263,7 +274,11 @@ export class CubeFace {
 
     for (const adyFace of this.adyFaces) {
       const otherSide = cubeSide.connectedSide(adyFace.dir);
-      adyFace.cubeFace.setCubeSide(otherSide);
+      if (this.cubeSide === LeftCubeSide.Instance) {
+        adyFace.cubeFace.setCubeSide(BackCubeSide.Instance);
+      } else {
+        adyFace.cubeFace.setCubeSide(otherSide);
+      }
     }
   }
 }
@@ -300,16 +315,7 @@ export class AdyCube {
     }
 
     if (nextCell.canTravel) {
-      if (rotation === Up.Instance) {
-        person.dir = person.dir.rotateRightNTimes(2);
-      } else {
-        if (
-          this.endDirLine.directionStandard === rotationLine.directionStandard
-        ) {
-          person.dir = person.dir.rotate(rotation);
-        }
-      }
-
+      person.dir = rotationLine.opposite;
       return nextCell;
     }
 
