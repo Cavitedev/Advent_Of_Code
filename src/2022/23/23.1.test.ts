@@ -1,11 +1,5 @@
 import { spreadArea } from "./23.1.js";
-import {
-  CheckPos,
-  EastCheck,
-  NorthCheck,
-  SouthCheck,
-  WestCheck,
-} from "./checkPos.js";
+import { CheckPos, NorthCheck } from "./checkPos.js";
 import { Point } from "./elf.js";
 import { ElfSpread } from "./elfSpread.js";
 
@@ -22,7 +16,7 @@ describe("23.1", () => {
     const sw = new Point(0, 0);
 
     it("All adyacent positions at (1,1) contain 8 values", () => {
-      const northCheck = new NorthCheck();
+      const northCheck = CheckPos.North;
       const adyPos = northCheck.allAdyacentPositions(point);
       expect(adyPos.length).toEqual(8);
       const expected = [sw, s, se, w, e, nw, n, ne];

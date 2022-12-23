@@ -18,58 +18,79 @@ export class ElfSpread {
   }
 
   public spread(rounds: number) {
-    const dirsToCheck = CheckDir.allCheckDirs();
-
     for (let round = 0; round < rounds; round++) {
       let nextRoundElves: Map<string, Elf> = new Map();
 
-      for (const [pointStr, elf] of this.elves) {
-        const point: Point = JSON.parse(pointStr);
-        const candidateMovements: Point[] = [];
-
-        for (let i = 0; i < dirsToCheck.length; i++) {
-          const index = (i + round) % dirsToCheck.length;
-          const dirToCheck = dirsToCheck[index];
-          let isBusy = false;
-          for (const pointMovement of dirToCheck.adyacentPositions(point)) {
-            if (this.elves.has(JSON.stringify(pointMovement))) {
-              isBusy = true;
-              break;
-            }
-          }
-          if (!isBusy) {
-            candidateMovements.push(dirToCheck.adyacentPos(point));
-          }
-        }
-
-        //If no other Elves are in one of those eight positions, the Elf does not do anything during this round + no valid direction
-        if (
-          candidateMovements.length === dirsToCheck.length ||
-          candidateMovements.length === 0
-        ) {
-          nextRoundElves.set(pointStr, elf);
-          continue;
-        }
-
-        const nextPoint = candidateMovements[0];
-        const nextPointStr = JSON.stringify(nextPoint);
-
-        //If two or more Elves propose moving to the same position, none of those Elves move
-        if (nextRoundElves.has(nextPointStr)) {
-          const undoElf = nextRoundElves.get(nextPointStr);
-          nextRoundElves.delete(nextPointStr);
-          const undoPointStr = JSON.stringify(undoElf.lastMove);
-          nextRoundElves.set(undoPointStr, undoElf);
-          nextRoundElves.set(pointStr, elf);
-          continue;
-        }
-
-        elf.lastMove = point;
-        nextRoundElves.set(nextPointStr, elf);
-      }
+      this.moveElves(round, nextRoundElves);
 
       this.elves = nextRoundElves;
     }
+  }
+
+  public spreadUntilNoMovement() {
+    let round = 0;
+    let numberOfMovements: number;
+    do {
+      let nextRoundElves: Map<string, Elf> = new Map();
+      numberOfMovements = this.moveElves(round, nextRoundElves);
+      this.elves = nextRoundElves;
+      round++;
+    } while (numberOfMovements > 0);
+
+    return round;
+  }
+
+  private moveElves(round: number, nextRoundElves: Map<string, Elf>) {
+    const dirsToCheck = CheckDir.allCheckDirs();
+    let numberOfMovements: number = 0;
+
+    for (const [pointStr, elf] of this.elves) {
+      const point: Point = JSON.parse(pointStr);
+      const candidateMovements: Point[] = [];
+
+      for (let i = 0; i < dirsToCheck.length; i++) {
+        const index = (i + round) % dirsToCheck.length;
+        const dirToCheck = dirsToCheck[index];
+        let isBusy = false;
+        for (const pointMovement of dirToCheck.adyacentPositions(point)) {
+          if (this.elves.has(JSON.stringify(pointMovement))) {
+            isBusy = true;
+            break;
+          }
+        }
+        if (!isBusy) {
+          candidateMovements.push(dirToCheck.adyacentPos(point));
+        }
+      }
+
+      //If no other Elves are in one of those eight positions, the Elf does not do anything during this round + no valid direction
+      if (
+        candidateMovements.length === dirsToCheck.length ||
+        candidateMovements.length === 0
+      ) {
+        nextRoundElves.set(pointStr, elf);
+        continue;
+      }
+
+      const nextPoint = candidateMovements[0];
+      const nextPointStr = JSON.stringify(nextPoint);
+
+      //If two or more Elves propose moving to the same position, none of those Elves move
+      if (nextRoundElves.has(nextPointStr)) {
+        const undoElf = nextRoundElves.get(nextPointStr);
+        nextRoundElves.delete(nextPointStr);
+        const undoPointStr = JSON.stringify(undoElf.lastMove);
+        numberOfMovements--;
+        nextRoundElves.set(undoPointStr, undoElf);
+        nextRoundElves.set(pointStr, elf);
+        continue;
+      }
+
+      elf.lastMove = point;
+      numberOfMovements++;
+      nextRoundElves.set(nextPointStr, elf);
+    }
+    return numberOfMovements;
   }
 
   public getCornerCoordinates(): Point[] {
