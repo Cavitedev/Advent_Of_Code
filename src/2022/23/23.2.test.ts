@@ -11,11 +11,11 @@ describe("23.2", () => {
     expect(result).toEqual(20);
   });
 
+  // 11727 ms, 11948 ms, 11962 ms (JSON)
+  // 2721 ms,  2727 ms, 2874(custom string)
   it("Test with input.txt", async () => {
     const result = await roundsBeforeElvesStabilize("input.txt");
 
-    //more than 910
-    //less than 1068
     expect(result).toEqual(918);
   });
 });

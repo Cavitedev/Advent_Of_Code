@@ -11,7 +11,7 @@ export class ElfSpread {
       if (char === "#") {
         const elf = new Elf();
         const pointToAdd = new Point(i, this._rowNum);
-        this.elves.set(JSON.stringify(pointToAdd), elf);
+        this.elves.set(pointToAdd.toKey(), elf);
       }
     }
     this._rowNum--;
@@ -45,7 +45,7 @@ export class ElfSpread {
     let numberOfMovements: number = 0;
 
     for (const [pointStr, elf] of this.elves) {
-      const point: Point = JSON.parse(pointStr);
+      const point: Point = Point.fromKey(pointStr);
       const candidateMovements: Point[] = [];
 
       for (let i = 0; i < dirsToCheck.length; i++) {
@@ -53,7 +53,7 @@ export class ElfSpread {
         const dirToCheck = dirsToCheck[index];
         let isBusy = false;
         for (const pointMovement of dirToCheck.adyacentPositions(point)) {
-          if (this.elves.has(JSON.stringify(pointMovement))) {
+          if (this.elves.has(pointMovement.toKey())) {
             isBusy = true;
             break;
           }
@@ -73,13 +73,13 @@ export class ElfSpread {
       }
 
       const nextPoint = candidateMovements[0];
-      const nextPointStr = JSON.stringify(nextPoint);
+      const nextPointStr = nextPoint.toKey();
 
       //If two or more Elves propose moving to the same position, none of those Elves move
       if (nextRoundElves.has(nextPointStr)) {
         const undoElf = nextRoundElves.get(nextPointStr);
         nextRoundElves.delete(nextPointStr);
-        const undoPointStr = JSON.stringify(undoElf.lastMove);
+        const undoPointStr = undoElf.lastMove.toKey();
         numberOfMovements--;
         nextRoundElves.set(undoPointStr, undoElf);
         nextRoundElves.set(pointStr, elf);
@@ -100,7 +100,7 @@ export class ElfSpread {
     let maxY = -Infinity;
 
     for (const pointJson of this.elves.keys()) {
-      const point: Point = JSON.parse(pointJson);
+      const point: Point = Point.fromKey(pointJson);
       minX = Math.min(point.x, minX);
       minY = Math.min(point.y, minY);
       maxX = Math.max(point.x, maxX);
@@ -121,7 +121,7 @@ export class ElfSpread {
     for (let y = upLeft.y; y >= downRight.y; y--) {
       for (let x = upLeft.x; x <= downRight.x; x++) {
         const point = new Point(x, y);
-        const isThereElf = this.elves.has(JSON.stringify(point));
+        const isThereElf = this.elves.has(point.toKey());
         output += isThereElf ? "#" : ".";
       }
       output += "\n";
