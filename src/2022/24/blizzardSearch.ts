@@ -17,6 +17,7 @@ export class BlizzardSearch {
     const startNode = new BlizzardNode(startI, startJ, 0);
     startNode.goalI = endI;
     startNode.goalJ = endJ;
+    startNode.goalIndex = 0;
     open.push(startNode);
 
     const visitedStates = new Set<number>();
