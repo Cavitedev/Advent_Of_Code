@@ -55,7 +55,7 @@ export class BlizzardSearch {
     const [startI, startJ] = this.startPoint();
     const [endI, endJ] = this.endPoint();
 
-    const open = new PriorityQueue<BlizzardNode>((a, b) => a.fCost < b.fCost);
+    let open = new PriorityQueue<BlizzardNode>((a, b) => a.fCost < b.fCost);
     const startNode = new BlizzardNode(startI, startJ, 0);
     startNode.goalI = endI;
     startNode.goalJ = endJ;
@@ -89,6 +89,7 @@ export class BlizzardSearch {
             node.goalJ = endJ;
           }
           node.goalIndex++;
+          open = new PriorityQueue<BlizzardNode>((a, b) => a.fCost < b.fCost);
         }
       }
 
