@@ -1,4 +1,5 @@
 import { PriorityQueue } from "../../common/priorityQueue.js";
+import { Utils } from "../../common/Utils.js";
 import { BlizzardState } from "./blizzard.js";
 import { Direction } from "./direction.js";
 
@@ -18,6 +19,7 @@ export class BlizzardSearch {
     startNode.goalI = endI;
     startNode.goalJ = endJ;
     startNode.goalIndex = 0;
+    startNode.addHeuristicFromGoalIndex = () => 0;
     open.push(startNode);
 
     const visitedStates = new Set<number>();
@@ -58,6 +60,9 @@ export class BlizzardSearch {
     startNode.goalI = endI;
     startNode.goalJ = endJ;
     startNode.goalIndex = 0;
+
+    const distStartEnd = Utils.ManhattanDistance(startI, startJ, endI, endJ);
+    startNode.addHeuristicFromGoalIndex = (index) => (2 - index) * distStartEnd;
     open.push(startNode);
 
     const visitedStates = new Set<number>();
@@ -125,6 +130,7 @@ export class BlizzardNode {
   public goalI: number;
   public goalJ: number;
   public goalIndex: number;
+  public addHeuristicFromGoalIndex: (x: number) => number;
   private _parent: BlizzardNode;
 
   constructor(i: number, j: number, gCost: number) {
@@ -182,25 +188,15 @@ export class BlizzardNode {
     this.goalI = parent.goalI;
     this.goalJ = parent.goalJ;
     this.goalIndex = parent.goalIndex;
-    const hCost = this._manhattanDistance(
-      this.i,
-      this.j,
-      this.goalI,
-      this.goalJ
-    );
+    this.addHeuristicFromGoalIndex = parent.addHeuristicFromGoalIndex;
+
+    const hCost =
+      Utils.ManhattanDistance(this.i, this.j, this.goalI, this.goalJ) +
+      this.addHeuristicFromGoalIndex(this.goalIndex);
     this.fCost = this.minutes + hCost;
   }
 
   public isGoal() {
     return this.i === this.goalI && this.j === this.goalJ;
-  }
-
-  private _manhattanDistance(
-    i: number,
-    j: number,
-    endI: number,
-    endJ: number
-  ): number {
-    return Math.abs(endI - i) + Math.abs(endJ - j);
   }
 }

@@ -101,7 +101,7 @@ export class MonkeysAnalyzer {
     monkey.throwCondition = (item: number) => item % value === 0;
     // this.modulusToApply *= value;
     // Decrease values even further
-    this.modulusToApply = Utils.leastCommonMultiple(this.modulusToApply, value);
+    this.modulusToApply = Utils.LeastCommonMultiple(this.modulusToApply, value);
   }
 
   private _addMonkeyToThrowIfTrue(values: string, monkey: Monkey) {
