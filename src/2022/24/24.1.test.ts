@@ -107,7 +107,7 @@ describe("24.1", () => {
     });
 
     it("Best path has length 18", () => {
-      const bestPath = blizzardSearch.search();
+      const bestPath = blizzardSearch.searchEnd();
       expect(bestPath.length - 1).toEqual(18);
     });
   });

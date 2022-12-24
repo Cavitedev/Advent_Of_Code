@@ -2,7 +2,7 @@ import { readFileLines } from "../../common/readfileLines.js";
 import { BlizzardState } from "./blizzard.js";
 import { BlizzardSearch } from "./blizzardSearch.js";
 
-export async function distanceBestPathInBlizzard(
+export async function distanceBestPathInBlizzardGoReturnGo(
   file: string
 ): Promise<number> {
   const rl = readFileLines(__dirname, file);
@@ -15,7 +15,7 @@ export async function distanceBestPathInBlizzard(
 
   const blizzardSearch = new BlizzardSearch(blizzardState);
 
-  const path = blizzardSearch.searchEnd();
+  const path = blizzardSearch.searchEndStartEnd();
 
   return path.length - 1;
 }
