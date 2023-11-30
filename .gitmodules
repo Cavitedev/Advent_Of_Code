@@ -1,3 +1,4 @@
 [submodule "2022"]
 	path = 2022
 	url = https://github.com/Cavitedev/advent-of-code-2022.git
+	branch = master
