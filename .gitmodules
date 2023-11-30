@@ -2,7 +2,3 @@
 	path = 2022
 	url = https://github.com/Cavitedev/advent-of-code-2022.git
 	branch = master
-[submodule "2023"]
-	path = 2023
-	url = https://github.com/Cavitedev/advent-of-code-2023.git
-	branch = main
